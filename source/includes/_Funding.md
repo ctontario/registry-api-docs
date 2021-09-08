@@ -261,6 +261,125 @@ Uploads a document to the specified study funding record.  The document informat
 system | admin | N/A|N/A
 system | funding | N/A|N/A
 
+## StudyFundingFeeSchedules - <em>Get Study Funding Fee Schedules</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/funding/fee-schedules"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Response Schema
+
+```json
+{
+  "id": "/StudyFundingFeeSchedulesResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "/StudyFeeSchedule",
+        "properties": {
+          "id": {"type": "object"},
+          "name": {"type": "string"},
+          "invoiceProcessingMethod": {"type": "string"},
+          "checkMethod": {"type": "string"},
+          "startDt": {"type": "date"},
+          "createDt": {"type": "date"},
+          "updateDt": {"type": "date"},
+          "fees": {
+            "type": "array",
+            "items": {
+              "id": "/StudyFees",
+              "properties": {
+                "id": {"type": "object"},
+                "name": {"type": "string"},
+                "startDt": {"type": "date"},
+                "createDt": {"type": "date"},
+                "updateDt": {"type": "date"},
+                "conditions": {
+                  "type": "array",
+                  "items": {
+                    "id": "/StudyFeeCondition",
+                    "properties": {
+                      "name": {"type": "string"},
+                      "label": {"type": "string"},
+                      "description": {"type": "string"},
+                      "sponsorFee": {
+                        "type": "array",
+                        "items": {
+                          "properties": {
+                            "institutionId": {"type": "object"},
+                            "fee": {"type": "number"}
+                          },
+                          "required": ["fee"]
+                        }
+                      },
+                      "sitePayment": {
+                        "type": "array",
+                        "items": {
+                          "properties": {
+                            "institutionId": {"type": "object"},
+                            "daysToPayout": {"type": "number"},
+                            "payment": {"type": "number"}
+                          },
+                          "required": ["payment"]
+                        }
+                      },
+                      "rebPayment": {
+                        "type": "array",
+                        "items": {
+                          "properties": {
+                            "committeeId": {"type": "object"},
+                            "daysToPayout": {"type": "number"},
+                            "payment": {"type": "number"}
+                          },
+                          "required": ["payment"]
+                        }
+                      }
+                    },
+                    "required": ["name", "label", "description", "sponsorFee", "rebPayment"]
+                  }
+                }
+              },
+              "required": ["id", "name", "createDt", "updateDt", "conditions"]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "invoiceProcessingMethod",
+          "checkMethod",
+          "createDt",
+          "updateDt",
+          "fees"
+        ]
+      }
+    }
+  }
+}
+```
+
+
+Gets all the data for the fee schedules and associated pricing in the system.
+
+### HTTP Request
+
+`GET /funding/fee-schedules`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
 ## StudyFundingGenerateInvoiceDocuments - <em>Study Funding Generate Invoice Documents</em>
 
 
@@ -437,7 +556,7 @@ curl "https://ctoregistry.com/api/v1/funding/institution-search/:searchString?"
               "region": {"type": "string"},
               "postalCode": {"type": "string"},
               "extendedAddress": {"type": "array", "items": {"type": "string"}},
-              "countryName": {"type": "string"}
+              "countryName": {"type": ["string", "null"]}
             },
             "required": []
           },
@@ -455,7 +574,7 @@ curl "https://ctoregistry.com/api/v1/funding/institution-search/:searchString?"
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
                   "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                  "countryName": {"type": "string"}
+                  "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
               },
@@ -539,6 +658,19 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
         "type": "string",
         "enum": ["notLinked", "linked", "all"],
         "description": "an array of payee institution IDs"
+      },
+      "invoiceCondition": {
+        "type": "string",
+        "enum": [
+          "initial2Sites",
+          "firstBracket",
+          "secondBracket",
+          "finalBracket",
+          "renewalFee",
+          "amendmentFee",
+          "all"
+        ],
+        "description": "the invoice condition, or all"
       }
     }
   }
@@ -601,7 +733,7 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
                   "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                  "countryName": {"type": "string"}
+                  "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
               },
@@ -1223,7 +1355,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
                   "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                  "countryName": {"type": "string"}
+                  "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
               },
@@ -1373,7 +1505,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
                 "region": {"type": "string"},
                 "postalCode": {"type": "string"},
                 "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                "countryName": {"type": "string"}
+                "countryName": {"type": ["string", "null"]}
               },
               "required": []
             },
@@ -1673,7 +1805,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
                   "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                  "countryName": {"type": "string"}
+                  "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
               },
@@ -1863,7 +1995,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                 "region": {"type": "string"},
                 "postalCode": {"type": "string"},
                 "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                "countryName": {"type": "string"}
+                "countryName": {"type": ["string", "null"]}
               },
               "required": []
             },

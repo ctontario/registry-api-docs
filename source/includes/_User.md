@@ -791,7 +791,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId/institution/:institutionId"
             "region": {"type": "string"},
             "postalCode": {"type": "string"},
             "extendedAddress": {"type": "array", "items": {"type": "string"}},
-            "countryName": {"type": "string"}
+            "countryName": {"type": ["string", "null"]}
           },
           "required": []
         },
@@ -1661,7 +1661,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId"
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
                   "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                  "countryName": {"type": "string"}
+                  "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
               },

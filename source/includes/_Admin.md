@@ -85,7 +85,7 @@ curl "https://ctoregistry.com/api/v1/admin/moderation/user"
                     "region": {"type": "string"},
                     "postalCode": {"type": "string"},
                     "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                    "countryName": {"type": "string"}
+                    "countryName": {"type": ["string", "null"]}
                   },
                   "required": []
                 },
@@ -499,9 +499,9 @@ curl "https://ctoregistry.com/api/v1/admin/email/:emailLogId"
         },
         "required": ["id", "event", "createDt", "updateDt"]
       }
-    },
-    "required": ["emailLog", "events"]
-  }
+    }
+  },
+  "required": ["emailLog", "events"]
 }
 ```
 

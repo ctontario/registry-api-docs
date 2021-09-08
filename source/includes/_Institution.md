@@ -52,6 +52,7 @@ Checks to see if an institution alternate name is already in use or not
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | support | N/A|N/A
+system | funding | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 institution | admin | N/A|N/A
 
@@ -105,6 +106,7 @@ Checks to see if an institution code is already in use or not
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | support | N/A|N/A
+system | funding | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 institution | admin | N/A|N/A
 
@@ -158,6 +160,7 @@ Checks to see if an institution name is already in use or not
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | support | N/A|N/A
+system | funding | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 institution | admin | N/A|N/A
 
@@ -277,6 +280,7 @@ Create a new institution in the system.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | support | N/A|N/A
+system | funding | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 
 ## InstitutionDictionary - <em>Institution Dictionary</em>
@@ -388,6 +392,7 @@ Deletes a specified document from an institution document
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | support | N/A|N/A
+system | funding | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 institution | admin | institution|N/A
 
@@ -509,6 +514,7 @@ Uploads a document to the specified institution.  The document information is co
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | support | N/A|N/A
+system | funding | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 institution | admin | institution|N/A
 
@@ -650,7 +656,7 @@ curl "https://ctoregistry.com/api/v1/institution/"
               "region": {"type": "string"},
               "postalCode": {"type": "string"},
               "extendedAddress": {"type": "array", "items": {"type": "string"}},
-              "countryName": {"type": "string"}
+              "countryName": {"type": ["string", "null"]}
             },
             "required": []
           }
@@ -719,7 +725,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId/payee"
             "region": {"type": "string"},
             "postalCode": {"type": "string"},
             "extendedAddress": {"type": "array", "items": {"type": "string"}},
-            "countryName": {"type": "string"}
+            "countryName": {"type": ["string", "null"]}
           },
           "required": []
         },
@@ -940,7 +946,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId"
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
                   "extendedAddress": {"type": "array", "items": {"type": "string"}},
-                  "countryName": {"type": "string"}
+                  "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
               },
@@ -959,9 +965,9 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId"
                   },
                   "required": ["number", "extension", "type"]
                 }
-              },
-              "required": ["name"]
-            }
+              }
+            },
+            "required": ["name"]
           }
         }
       },
@@ -998,7 +1004,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId"
             "region": {"type": "string"},
             "postalCode": {"type": "string"},
             "extendedAddress": {"type": "array", "items": {"type": "string"}},
-            "countryName": {"type": "string"}
+            "countryName": {"type": ["string", "null"]}
           },
           "required": []
         }
@@ -1457,7 +1463,7 @@ curl "https://ctoregistry.com/api/v1/dictionary/institution-search/:searchString
               "region": {"type": "string"},
               "postalCode": {"type": "string"},
               "extendedAddress": {"type": "array", "items": {"type": "string"}},
-              "countryName": {"type": "string"}
+              "countryName": {"type": ["string", "null"]}
             },
             "required": []
           }
@@ -1654,5 +1660,6 @@ Updates one institutions information in the system
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | support | N/A|N/A
+system | funding | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 institution | admin | institution|N/A
