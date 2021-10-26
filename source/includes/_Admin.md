@@ -156,6 +156,66 @@ system | support | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 institution | admin | N/A|User is a member at, or their request involves the target institution of the privilege.
 
+## AdminUserLockOut - <em>Admin Lock/Unlock User</em>
+
+
+```shell
+curl -X PUT "https://ctoregistry.com/api/v1/admin/moderation/user/:userId/lock/:isLocked"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/AdminUserLockParams",
+    "type": "object",
+    "properties": {"userId": {"type": "string"}, "isLocked": {"type": "boolean"}},
+    "required": ["userId", "isLocked"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+sets the overall status of a user account to "disabled" if isLocked is true which prevents that user 
+        from logging in and accessing the system.
+        If is locked is set to false and the user was disabled, the status is reverted to their accounts previous status
+        
+
+### HTTP Request
+
+`PUT /admin/moderation/user/:userId/lock/:isLocked`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
+institution | admin | user|N/A
+
 ## AdminUserModeration - <em>Admin User Institution Moderation</em>
 
 

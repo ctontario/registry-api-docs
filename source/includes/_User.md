@@ -2,11 +2,82 @@
 # User
 
 
+## StudySearch - <em>Search Studies</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/dictionary/study-search/:searchString?"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/SearchParams",
+    "type": "object",
+    "properties": {"searchString": {"type": "string"}},
+    "required": []
+  },
+  "query": {
+    "id": "/SearchQuery",
+    "type": "object",
+    "properties": {"reject": {"type": "string"}},
+    "required": []
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/StudySearchResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "/StudySearch",
+        "properties": {
+          "id": {"type": "object"},
+          "studyDisplayName": {"type": ["string", "number"]},
+          "shortTitle": {"type": "string"},
+          "studyIdentifier": {"type": ["string", "null"]},
+          "projectIdNumber": {"type": "number"}
+        },
+        "required": ["id", "studyDisplayName", "shortTitle"]
+      }
+    }
+  }
+}
+```
+
+
+Searches for studies whose study identifier, short title, or project id matches the search string.
+
+### HTTP Request
+
+`GET /dictionary/study-search/:searchString?`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
+
 ## UserAtInstitutionSearch - <em>Search Users at Institution</em>
 
 
 ```shell
-curl "https://ctoregistry.com/api/v1/dictionary/institution/:institutionId/user/:searchString?"  
+curl "https://ctoregistry.com/api/v1/dictionary/institution/:institutionId/user-search/:searchString?"  
   -H "Authorization: {{_JWT_TOKEN_}}"  
   -H "Content-Type: application/json"
 ```
@@ -35,6 +106,7 @@ curl "https://ctoregistry.com/api/v1/dictionary/institution/:institutionId/user/
     "data": {
       "type": "array",
       "items": {
+        "id": "/UserSearch",
         "properties": {
           "id": {"type": "object"},
           "username": {"type": "string"},
@@ -52,7 +124,7 @@ Searches for users whose name or email matches the search string who are at the 
 
 ### HTTP Request
 
-`GET /dictionary/institution/:institutionId/user/:searchString?`
+`GET /dictionary/institution/:institutionId/user-search/:searchString?`
 
 
 
@@ -1869,6 +1941,11 @@ curl "https://ctoregistry.com/api/v1/user/:userId/quick-start"
           "studyTypeOther": {"type": "string"},
           "therapeuticArea": {"type": "string"},
           "projectIdNumber": {"type": "number"},
+          "reb": {
+            "type": "object",
+            "properties": {"id": {"type": "object"}, "name": {"type": "string"}},
+            "required": ["name"]
+          },
           "createDt": {"type": "date"},
           "updateDt": {"type": "date"}
         },
@@ -1905,6 +1982,75 @@ Get all the QuickSTART studies that a user can access
 self | N/A | N/A|N/A
 system | * | N/A|N/A
 institution | admin | user|N/A
+
+## UserSearch - <em>Search Users</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/dictionary/user-search/:searchString?"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/SearchParams",
+    "type": "object",
+    "properties": {"searchString": {"type": "string"}},
+    "required": []
+  },
+  "query": {
+    "id": "/SearchQuery",
+    "type": "object",
+    "properties": {"reject": {"type": "string"}},
+    "required": []
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/UserSearchResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "/UserSearch",
+        "properties": {
+          "id": {"type": "object"},
+          "username": {"type": "string"},
+          "fullName": {"type": "string"}
+        },
+        "required": ["id", "fullName", "username"]
+      }
+    }
+  }
+}
+```
+
+
+Searches for users whose name or email matches the search string.
+
+### HTTP Request
+
+`GET /dictionary/user-search/:searchString?`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
 
 ## UserShortProfile - <em>Get User Short Profile</em>
 
@@ -2063,6 +2209,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId/study"
             ]
           },
           "expiryDt": {"type": ["date", "null"]},
+          "studyDisplayName": {"type": ["string", "number"]},
           "shortTitle": {"type": "string"},
           "studyIdentifier": {"type": ["string", "null"]},
           "title": {"type": ["string", "null"]},
@@ -2076,9 +2223,36 @@ curl "https://ctoregistry.com/api/v1/user/:userId/study"
           "projectIdNumber": {"type": "number"},
           "roles": {
             "type": "array",
+            "description": "The users roles on the study, only set when returned as part of the user studies route.",
             "items": {
-              "type": "string",
-              "description": "The users role on the study, only set when returned as part of the user studies route."
+              "id": "/StudyAccess",
+              "properties": {
+                "id": {"type": ["object", "null"]},
+                "firstName": {"type": "string"},
+                "lastName": {"type": "string"},
+                "userId": {"type": "object"},
+                "email": {"type": "string"},
+                "roleName": {"type": "string"},
+                "roleCode": {"type": "string", "enum": ["readOnly"]},
+                "source": {"type": "string", "enum": ["stream", "local", "system"]},
+                "status": {"type": "string", "enum": ["active", "deleted"]},
+                "deletedDt": {"type": "date"},
+                "institutionId": {"type": "object"},
+                "institutionName": {"type": "string"},
+                "updateDt": {"type": "date"},
+                "createDt": {"type": "date"}
+              },
+              "required": [
+                "id",
+                "firstName",
+                "lastName",
+                "userId",
+                "email",
+                "source",
+                "status",
+                "updateDt",
+                "createDt"
+              ]
             }
           },
           "createDt": {"type": "date"},
@@ -2087,12 +2261,12 @@ curl "https://ctoregistry.com/api/v1/user/:userId/study"
         "required": [
           "id",
           "isInvestigatorInitiatedStudy",
-          "studySponsor",
           "ohrp",
           "fda",
           "observational",
           "provincialStatus",
           "expiryDt",
+          "studyDisplayName",
           "shortTitle",
           "title",
           "reviewerLink",

@@ -2,6 +2,303 @@
 # Study
 
 
+## DeleteStudyUserAccess - <em>Save Study User Access</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/study/:studyId/access/:userAccessId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyAccessDeleteParams",
+    "type": "object",
+    "properties": {"studyId": {"type": "string"}, "userAccessId": {"type": "string"}},
+    "required": ["studyId", "userAccessId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+
+        Deletes a study access for a user.  The study access must be locally created or an error will be returned
+        
+
+### HTTP Request
+
+`DELETE /study/:studyId/access/:userAccessId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
+
+## SaveStudyUserAccess - <em>Save Study User Access</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/study/:studyId/access"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyAccessParams",
+    "type": "object",
+    "properties": {"studyId": {"type": "string"}},
+    "required": ["studyId"]
+  },
+  "body": {
+    "id": "/StudyAccessBody",
+    "type": "object",
+    "properties": {
+      "userAccessId": {"type": "string"},
+      "userId": {"type": "string"},
+      "roleName": {"type": "string"},
+      "roleCode": {"type": "string", "enum": ["readOnly"]}
+    },
+    "required": ["userId", "roleCode"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+
+        Updates or creates a study access for a user
+        
+
+### HTTP Request
+
+`POST /study/:studyId/access`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
+
+## StudyAccess - <em>Get Study Access</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/study/:studyId/access"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyParams",
+    "type": "object",
+    "properties": {"studyId": {"type": "string"}},
+    "required": ["studyId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/StudyAccessResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "/StudyAccess",
+        "properties": {
+          "id": {"type": ["object", "null"]},
+          "firstName": {"type": "string"},
+          "lastName": {"type": "string"},
+          "userId": {"type": "object"},
+          "email": {"type": "string"},
+          "roleName": {"type": "string"},
+          "roleCode": {"type": "string", "enum": ["readOnly"]},
+          "source": {"type": "string", "enum": ["stream", "local", "system"]},
+          "status": {"type": "string", "enum": ["active", "deleted"]},
+          "deletedDt": {"type": "date"},
+          "institutionId": {"type": "object"},
+          "institutionName": {"type": "string"},
+          "updateDt": {"type": "date"},
+          "createDt": {"type": "date"}
+        },
+        "required": [
+          "id",
+          "firstName",
+          "lastName",
+          "userId",
+          "email",
+          "source",
+          "status",
+          "updateDt",
+          "createDt"
+        ]
+      }
+    }
+  },
+  "required": ["data"]
+}
+```
+
+
+
+        Gets the list of users that can access the study.
+        
+
+### HTTP Request
+
+`GET /study/:studyId/access`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
+
+## StudyForms - <em>Get Study Forms</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/study/:studyId/forms"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyParams",
+    "type": "object",
+    "properties": {"studyId": {"type": "string"}},
+    "required": ["studyId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/StudyFormsResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "properties": {
+          "formCode": {"type": "string"},
+          "formName": {"type": "string"},
+          "reviewReferences": {"type": "array", "items": {"type": "string"}},
+          "parentFormIdNumber": {"type": "number"},
+          "formIdNumber": {"type": "number"},
+          "initialSubmitDt": {"type": "date"},
+          "hasFees": {"type": ["boolean", "null"]},
+          "centre": {"type": ["string", "null"]},
+          "events": {
+            "type": "array",
+            "items": {
+              "id": "/StudyFormEvent",
+              "properties": {
+                "reviewReference": {"type": "string"},
+                "centre": {"type": ["string", "null"]},
+                "event": {"type": "string"},
+                "eventDt": {"type": "date"}
+              },
+              "required": ["event", "eventDt"]
+            }
+          }
+        },
+        "required": ["formCode", "formName", "formIdNumber", "reviewReferences", "events"]
+      }
+    }
+  },
+  "required": ["data"]
+}
+```
+
+
+
+        Gets the raw forms data that has been recorded for the study and event history for each form type
+        
+
+### HTTP Request
+
+`GET /study/:studyId/forms`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
+
 ## StudyList - <em>Get Studies</em>
 
 
@@ -88,6 +385,7 @@ curl "https://ctoregistry.com/api/v1/study/"
             ]
           },
           "expiryDt": {"type": ["date", "null"]},
+          "studyDisplayName": {"type": ["string", "number"]},
           "shortTitle": {"type": "string"},
           "studyIdentifier": {"type": ["string", "null"]},
           "title": {"type": ["string", "null"]},
@@ -101,9 +399,36 @@ curl "https://ctoregistry.com/api/v1/study/"
           "projectIdNumber": {"type": "number"},
           "roles": {
             "type": "array",
+            "description": "The users roles on the study, only set when returned as part of the user studies route.",
             "items": {
-              "type": "string",
-              "description": "The users role on the study, only set when returned as part of the user studies route."
+              "id": "/StudyAccess",
+              "properties": {
+                "id": {"type": ["object", "null"]},
+                "firstName": {"type": "string"},
+                "lastName": {"type": "string"},
+                "userId": {"type": "object"},
+                "email": {"type": "string"},
+                "roleName": {"type": "string"},
+                "roleCode": {"type": "string", "enum": ["readOnly"]},
+                "source": {"type": "string", "enum": ["stream", "local", "system"]},
+                "status": {"type": "string", "enum": ["active", "deleted"]},
+                "deletedDt": {"type": "date"},
+                "institutionId": {"type": "object"},
+                "institutionName": {"type": "string"},
+                "updateDt": {"type": "date"},
+                "createDt": {"type": "date"}
+              },
+              "required": [
+                "id",
+                "firstName",
+                "lastName",
+                "userId",
+                "email",
+                "source",
+                "status",
+                "updateDt",
+                "createDt"
+              ]
             }
           },
           "createDt": {"type": "date"},
@@ -112,12 +437,12 @@ curl "https://ctoregistry.com/api/v1/study/"
         "required": [
           "id",
           "isInvestigatorInitiatedStudy",
-          "studySponsor",
           "ohrp",
           "fda",
           "observational",
           "provincialStatus",
           "expiryDt",
+          "studyDisplayName",
           "shortTitle",
           "title",
           "reviewerLink",
@@ -255,6 +580,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
           ]
         },
         "expiryDt": {"type": ["date", "null"]},
+        "studyDisplayName": {"type": ["string", "number"]},
         "studyIdentifier": {"type": ["string", "null"]},
         "shortTitle": {"type": "string"},
         "title": {"type": ["string", "null"]},
@@ -539,7 +865,8 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
               "initialReviewType": {
                 "type": "string",
                 "enum": ["Full Board Review", "Delegated Review", "Admin Review"]
-              }
+              },
+              "formIdNumber": {"type": "number"}
             },
             "required": ["name", "status"]
           }
@@ -549,6 +876,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
         "id",
         "isInvestigatorInitiatedStudy",
         "sponsor",
+        "studyDisplayName",
         "ohrp",
         "fda",
         "observational",

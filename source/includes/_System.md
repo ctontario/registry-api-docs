@@ -87,9 +87,18 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
               "required": ["code", "label", "question"]
             }
           }
+        },
+        "localRoles": {
+          "id": "StudyLocalRole",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {"code": {"type": "string"}, "label": {"type": "string"}},
+              "required": ["code", "label"]
+            }
+          }
         }
       },
-      "required": ["ctaitaTypes", "interventions", "funding", "populations"]
+      "required": ["ctaitaTypes", "interventions", "funding", "populations", "localRoles"]
     },
     "contact": {
       "id": "ContactDictionaries",

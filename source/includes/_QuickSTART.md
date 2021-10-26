@@ -1106,6 +1106,11 @@ curl "https://ctoregistry.com/api/v1/quick-start/"
           "studyTypeOther": {"type": "string"},
           "therapeuticArea": {"type": "string"},
           "projectIdNumber": {"type": "number"},
+          "reb": {
+            "type": "object",
+            "properties": {"id": {"type": "object"}, "name": {"type": "string"}},
+            "required": ["name"]
+          },
           "createDt": {"type": "date"},
           "updateDt": {"type": "date"}
         },
