@@ -296,8 +296,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
     
  Scope      | Role       | Auth Source | Restrictions
 ------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | support | N/A|N/A
+system | * | N/A|N/A
 
 ## StudyList - <em>Get Studies</em>
 

@@ -289,6 +289,26 @@ curl "https://ctoregistry.com/api/v1/funding/fee-schedules"
           "startDt": {"type": "date"},
           "createDt": {"type": "date"},
           "updateDt": {"type": "date"},
+          "feesOverrides": {
+            "type": "array",
+            "items": {
+              "id": "/StudyFeesOverride",
+              "properties": {
+                "id": {"type": "object"},
+                "feesOverrideNumber": {"type": "string"},
+                "studyId": {"type": "object"},
+                "studyDisplayName": {"type": "string"},
+                "sponsorInstitutionIds": {"type": "array", "items": {"type": "object"}},
+                "feesId": {"type": "object"},
+                "feesName": {"type": "string"},
+                "startDt": {"type": "date"},
+                "endDt": {"type": "date"},
+                "createDt": {"type": "date"},
+                "updateDt": {"type": "date"}
+              },
+              "required": ["id", "feesOverrideNumber", "feesId", "startDt", "createDt", "updateDt"]
+            }
+          },
           "fees": {
             "type": "array",
             "items": {
@@ -355,6 +375,7 @@ curl "https://ctoregistry.com/api/v1/funding/fee-schedules"
           "checkMethod",
           "createDt",
           "updateDt",
+          "feesOverrides",
           "fees"
         ]
       }
@@ -369,6 +390,126 @@ Gets all the data for the fee schedules and associated pricing in the system.
 ### HTTP Request
 
 `GET /funding/fee-schedules`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingFeesOverride - <em>Study Funding Fees Override</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/funding/fees-override"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "body": {
+    "id": "/StudyFundingFeesOverrideBody",
+    "type": "object",
+    "properties": {
+      "feesOverrideId": {"type": "string"},
+      "startDt": {"type": "string", "format": "date-time"},
+      "endDt": {"type": "string", "format": "date-time"},
+      "feesId": {"type": "string"},
+      "studyId": {"type": "string"},
+      "studyDisplayName": {"type": "string"},
+      "sponsorInstitutionIds": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+    },
+    "required": ["startDt", "feesId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Saves a fees override.  If feesId is passed in the body, updates an existing fees override.
+
+### HTTP Request
+
+`POST /funding/fees-override`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingFeesOverrideDelete - <em>Study Funding Fees Override Delete</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/funding/fees-override/:feesOverrideId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingFeesOverrideDeleteParams",
+    "type": "object",
+    "properties": {"feesOverrideId": {"type": "string"}},
+    "required": ["feesOverrideId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Deletes a fees override.
+
+### HTTP Request
+
+`DELETE /funding/fees-override/:feesOverrideId`
 
 
 
@@ -628,6 +769,61 @@ Searches for institutions whose name matches the search string. Returns the paye
 system | admin | N/A|N/A
 system | funding | N/A|N/A
 
+## StudyFundingInvoiceDeleteHistory - <em>Study Funding Delete Invoice History</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/funding/invoices/:invoiceId/history/:historyId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingInvoiceDeleteHistoryParams",
+    "properties": {"invoiceId": {"type": "string"}, "historyId": {"type": "string"}},
+    "required": ["invoiceId", "historyId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+removes a note to from the invoice history.
+
+### HTTP Request
+
+`DELETE /funding/invoices/:invoiceId/history/:historyId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
 ## StudyFundingInvoiceList - <em>Get Study Funding Invoices</em>
 
 
@@ -705,6 +901,9 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
           "fundingNumber": {"type": "string"},
           "projectIdNumber": {"type": "number"},
           "feeScheduleId": {"type": "object"},
+          "feesId": {"type": "object"},
+          "feesName": {"type": "string"},
+          "feesDt": {},
           "isVoid": {"type": "boolean"},
           "reb": {
             "type": "object",
@@ -784,6 +983,9 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
           "fundingNumber",
           "projectIdNumber",
           "feeScheduleId",
+          "feesId",
+          "feesName",
+          "feesDt",
           "isVoid",
           "reb",
           "institutions",
@@ -816,6 +1018,71 @@ Gets a listing of study funding invoices in the system that the current user can
 ### HTTP Request
 
 `GET /funding/invoices`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingInvoiceSaveHistory - <em>Study Funding Add Invoice History</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/funding/invoices/:invoiceId/history"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingInvoiceSaveHistoryParams",
+    "properties": {"invoiceId": {"type": "string"}},
+    "required": ["invoiceId"]
+  },
+  "body": {
+    "id": "StudyFundingInvoiceSaveHistoryBody",
+    "type": "object",
+    "properties": {
+      "note": {"type": "string"},
+      "historyId": {"type": "string"},
+      "date": {"type": "string", "format": "date-time"}
+    },
+    "required": ["note"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+adds a note to the invoice history. Date can be specified or it will default to today
+
+### HTTP Request
+
+`POST /funding/invoices/:invoiceId/history`
 
 
 
@@ -949,7 +1216,11 @@ curl -X POST "https://ctoregistry.com/api/v1/funding/invoices/:invoiceId/update-
   "body": {
     "id": "StudyFundingInvoiceUpdateTotalBody",
     "type": "object",
-    "properties": {"subTotal": {"type": "number"}, "hst": {"type": "number"}},
+    "properties": {
+      "subTotal": {"type": "number"},
+      "hst": {"type": "number"},
+      "note": {"type": "string"}
+    },
     "required": ["subTotal", "hst"]
   }
 }
@@ -987,6 +1258,7 @@ Updates an invoice total, should be used only be admin and not be used after pay
  Scope      | Role       | Auth Source | Restrictions
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
+system | funding | N/A|N/A
 
 ## StudyFundingList - <em>Get Study Fundings</em>
 
@@ -1574,6 +1846,8 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
                   "void",
                   "payeeUpdate",
                   "create",
+                  "feesOverride",
+                  "note",
                   "updateTotal",
                   "sendInitial",
                   "sendReminder",
@@ -1874,6 +2148,8 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
                     "void",
                     "payeeUpdate",
                     "create",
+                    "feesOverride",
+                    "note",
                     "updateTotal",
                     "sendInitial",
                     "sendReminder",
@@ -2129,6 +2405,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                     "type": "array",
                     "items": {
                       "properties": {
+                        "id": {"type": "object"},
                         "actionDt": {"type": "date"},
                         "action": {
                           "type": "string",
@@ -2136,6 +2413,8 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                             "void",
                             "payeeUpdate",
                             "create",
+                            "feesOverride",
+                            "note",
                             "updateTotal",
                             "sendInitial",
                             "sendReminder",
@@ -2158,7 +2437,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                         "reason": {"type": "string"},
                         "userId": {"type": "object"}
                       },
-                      "required": ["actionDt", "action", "reason"]
+                      "required": ["id", "actionDt", "action", "reason"]
                     }
                   },
                   "createDt": {"type": "date"},
