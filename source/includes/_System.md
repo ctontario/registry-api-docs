@@ -36,6 +36,15 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
     "study": {
       "id": "StudyDictionaries",
       "properties": {
+        "status": {
+          "id": "StudyStatus",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {"code": {"type": "string"}, "label": {"type": "string"}},
+              "required": ["code", "label"]
+            }
+          }
+        },
         "ctaitaTypes": {
           "id": "StudyCtaitaTypeDictionary",
           "patternProperties": {
@@ -98,7 +107,7 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
           }
         }
       },
-      "required": ["ctaitaTypes", "interventions", "funding", "populations", "localRoles"]
+      "required": ["status", "ctaitaTypes", "interventions", "funding", "populations", "localRoles"]
     },
     "contact": {
       "id": "ContactDictionaries",
@@ -202,7 +211,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
         },
         "creationProgress": {
           "type": "array",
-          "items": {"type": "string", "enum": ["study", "studyDocuments", "contract", "budget"]}
+          "items": {
+            "type": "string",
+            "enum": ["project", "sponsor", "study", "studyDocuments", "contract", "budget"]
+          }
         },
         "site": {
           "properties": {
@@ -358,8 +370,320 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
           "id": "EmailTemplateDictionary",
           "patternProperties": {
             "^[a-zA-Z_$][\\w$]*$": {
-              "properties": {"code": {"type": "string"}, "label": {"type": "string"}},
-              "required": ["code", "label"]
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "templateName": {"type": "string"},
+                "recipients": {
+                  "properties": {
+                    "noEngagement": {
+                      "properties": {
+                        "to": {
+                          "properties": {
+                            "user": {"type": "boolean"},
+                            "projectAdmin": {"type": "boolean"},
+                            "quickStartAdmin": {"type": "boolean"},
+                            "sponsorRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
+                              }
+                            },
+                            "croRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["cro", "cro-contract", "cro-budget"]
+                              }
+                            },
+                            "siteRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "rc",
+                                  "investigator",
+                                  "contract",
+                                  "budget",
+                                  "approver",
+                                  "readonly"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        },
+                        "cc": {
+                          "properties": {
+                            "user": {"type": "boolean"},
+                            "projectAdmin": {"type": "boolean"},
+                            "quickStartAdmin": {"type": "boolean"},
+                            "sponsorRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
+                              }
+                            },
+                            "croRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["cro", "cro-contract", "cro-budget"]
+                              }
+                            },
+                            "siteRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "rc",
+                                  "investigator",
+                                  "contract",
+                                  "budget",
+                                  "approver",
+                                  "readonly"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        }
+                      }
+                    },
+                    "siteAndSponsorEngagement": {
+                      "properties": {
+                        "to": {
+                          "properties": {
+                            "user": {"type": "boolean"},
+                            "projectAdmin": {"type": "boolean"},
+                            "quickStartAdmin": {"type": "boolean"},
+                            "sponsorRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
+                              }
+                            },
+                            "croRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["cro", "cro-contract", "cro-budget"]
+                              }
+                            },
+                            "siteRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "rc",
+                                  "investigator",
+                                  "contract",
+                                  "budget",
+                                  "approver",
+                                  "readonly"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        },
+                        "cc": {
+                          "properties": {
+                            "user": {"type": "boolean"},
+                            "projectAdmin": {"type": "boolean"},
+                            "quickStartAdmin": {"type": "boolean"},
+                            "sponsorRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
+                              }
+                            },
+                            "croRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["cro", "cro-contract", "cro-budget"]
+                              }
+                            },
+                            "siteRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "rc",
+                                  "investigator",
+                                  "contract",
+                                  "budget",
+                                  "approver",
+                                  "readonly"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        }
+                      }
+                    },
+                    "siteEngagementOnly": {
+                      "properties": {
+                        "to": {
+                          "properties": {
+                            "user": {"type": "boolean"},
+                            "projectAdmin": {"type": "boolean"},
+                            "quickStartAdmin": {"type": "boolean"},
+                            "sponsorRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
+                              }
+                            },
+                            "croRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["cro", "cro-contract", "cro-budget"]
+                              }
+                            },
+                            "siteRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "rc",
+                                  "investigator",
+                                  "contract",
+                                  "budget",
+                                  "approver",
+                                  "readonly"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        },
+                        "cc": {
+                          "properties": {
+                            "user": {"type": "boolean"},
+                            "projectAdmin": {"type": "boolean"},
+                            "quickStartAdmin": {"type": "boolean"},
+                            "sponsorRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
+                              }
+                            },
+                            "croRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["cro", "cro-contract", "cro-budget"]
+                              }
+                            },
+                            "siteRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "rc",
+                                  "investigator",
+                                  "contract",
+                                  "budget",
+                                  "approver",
+                                  "readonly"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        }
+                      }
+                    },
+                    "sponsorEngagementOnly": {
+                      "properties": {
+                        "to": {
+                          "properties": {
+                            "user": {"type": "boolean"},
+                            "projectAdmin": {"type": "boolean"},
+                            "quickStartAdmin": {"type": "boolean"},
+                            "sponsorRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
+                              }
+                            },
+                            "croRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["cro", "cro-contract", "cro-budget"]
+                              }
+                            },
+                            "siteRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "rc",
+                                  "investigator",
+                                  "contract",
+                                  "budget",
+                                  "approver",
+                                  "readonly"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        },
+                        "cc": {
+                          "properties": {
+                            "user": {"type": "boolean"},
+                            "projectAdmin": {"type": "boolean"},
+                            "quickStartAdmin": {"type": "boolean"},
+                            "sponsorRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
+                              }
+                            },
+                            "croRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": ["cro", "cro-contract", "cro-budget"]
+                              }
+                            },
+                            "siteRoles": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "rc",
+                                  "investigator",
+                                  "contract",
+                                  "budget",
+                                  "approver",
+                                  "readonly"
+                                ]
+                              }
+                            }
+                          },
+                          "required": []
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "required": ["label"]
             }
           }
         },

@@ -71,6 +71,7 @@ Records the users signature for the approval using their account password.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStartSite | rc | quickStartSite|N/A
 quickStartSite | approver | quickStartSite|The user must be assigned to the specific approval.
 
@@ -149,6 +150,7 @@ Creates an approval record for a quickSTART site. The site must not be completed
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
@@ -160,7 +162,6 @@ quickStartSite | contract | quickStartSite|N/A
 quickStartSite | budget | quickStartSite|N/A
 quickStartSite | approver | quickStartSite|N/A
 quickStartSite | investigator | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
 
 ## QuickSTARTApprovalDelete - <em>QuickSTART Site Delete Approval</em>
 
@@ -221,6 +222,7 @@ Deletes an approval record for a quickSTART site. The site must not be completed
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
@@ -231,7 +233,7 @@ quickStartSite | rc | quickStartSite|N/A
 quickStartSite | contract | quickStartSite|N/A
 quickStartSite | budget | quickStartSite|N/A
 quickStartSite | approver | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStartSite | investigator | quickStartSite|N/A
 
 ## QuickSTARTApprovalUpdate - <em>QuickSTART Site Add / Update Approvals</em>
 
@@ -312,6 +314,7 @@ Updates or creates an approval record for a quickSTART site. The site must not b
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
@@ -323,7 +326,6 @@ quickStartSite | contract | quickStartSite|N/A
 quickStartSite | budget | quickStartSite|N/A
 quickStartSite | approver | quickStartSite|N/A
 quickStartSite | investigator | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
 
 ## QuickSTARTApprovalsList - <em>QuickSTART Site Approvals</em>
 
@@ -422,7 +424,7 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
+institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTCreation - <em>QuickSTART Creation</em>
 
@@ -441,56 +443,37 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/"
     "id": "/QuickStartCreationRequestBody",
     "type": "object",
     "properties": {
-      "shortTitle": {"type": "string"},
-      "sponsorInstitutionId": {"type": "string"},
-      "sponsorUsers": {
+      "adminUsers": {
         "type": "array",
         "minItems": 1,
         "uniqueItems": true,
         "items": {
           "type": "object",
-          "properties": {
-            "userId": {"type": "string"},
-            "role": {"type": "string", "enum": ["full", "contract", "budget"]}
-          },
-          "required": ["userId", "role"]
+          "properties": {"userId": {"type": "string"}},
+          "required": ["userId"]
         }
       },
-      "croInstitutionId": {"type": ["string", "null"]},
-      "croUsers": {
-        "type": "array",
-        "minItems": 0,
-        "uniqueItems": true,
-        "items": {
-          "type": "object",
-          "properties": {
-            "userId": {"type": "string"},
-            "role": {"type": "string", "enum": ["full", "contract", "budget"]}
-          },
-          "required": ["userId", "role"]
-        }
-      },
-      "studyType": {"type": "string", "enum": ["phase1", "phase2", "phase3", "phase4", "other"]},
-      "studyTypeOther": {"type": ["string", "null"]},
-      "therapeuticArea": {"type": "string"},
+      "isSponsorManaged": {"type": "boolean"},
       "isSingleSiteStudy": {"type": "boolean"},
+      "isSponsorEngagement": {"type": "boolean"},
+      "isSiteEngagement": {"type": "boolean"},
+      "isStreamStudy": {"type": "boolean"},
+      "shortTitle": {"type": "string"},
+      "quickStartIdentifier": {"type": ["string", "null"]},
+      "projectIdNumber": {"type": ["number", "null"]},
       "reb": {
         "properties": {"name": {"type": "string"}, "committeeId": {"type": ["string", "null"]}},
         "required": ["name"]
       },
-      "quickStartIdentifier": {"type": ["string", "null"]},
-      "projectIdNumber": {"type": ["string", "null"]},
       "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]}
     },
     "required": [
       "shortTitle",
-      "sponsorInstitutionId",
-      "sponsorUsers",
-      "croInstitutionId",
-      "croUsers",
-      "therapeuticArea",
+      "adminUsers",
       "isSingleSiteStudy",
-      "studyType",
+      "isSponsorEngagement",
+      "isSiteEngagement",
+      "isStreamStudy",
       "quickStartIdentifier"
     ]
   }
@@ -525,12 +508,7 @@ Creates a new QuickSTART application in the system.
 
 ### Authorization
  
-    
- Scope      | Role       | Auth Source | Restrictions
-------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
-institution | quickStartSponsor | N/A|The data can only include the target institution as the sponsor institution.
+N/A
 
 ## QuickSTARTDocumentDelete - <em>Delete an QuickSTART Document</em>
 
@@ -587,13 +565,13 @@ Deletes a specified document from an QuickSTART application
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
 
 ## QuickSTARTDocumentDownload - <em>Download QuickSTART Document</em>
 
@@ -638,11 +616,9 @@ Downloads one document from the specified QuickSTART application.
     
  Scope      | Role       | Auth Source | Restrictions
 ------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTDocumentUpload - <em>Upload QuickSTART Document</em>
 
@@ -730,13 +706,13 @@ Uploads a document to the specified QuickSTART application.  The document inform
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
 
 ## QuickSTARTExtraDocumentDelete - <em>QuickSTART Site Pre Screen Document Delete</em>
 
@@ -797,16 +773,16 @@ Deletes an extra document from a quickSTART site.  The document associated must 
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
+quickStart | sponsor-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStart | sponsor-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
 quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
+quickStart | cro-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStart | cro-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
 quickStartSite | rc | quickStartSite|N/A
-quickStartSite | contract | quickStartSite|N/A
-quickStartSite | budget | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStartSite | contract | quickStartSite|The user must be assigned to the specific approval.
+quickStartSite | budget | quickStartSite|The user must be assigned to the specific approval.
 
 ## QuickSTARTExtraDocumentSave - <em>QuickSTART Site Save Extra Document</em>
 
@@ -878,16 +854,16 @@ Updates or creates an extra document for a QuickSTART site.  The document associ
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
+quickStart | sponsor-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStart | sponsor-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
 quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
+quickStart | cro-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStart | cro-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
 quickStartSite | rc | quickStartSite|N/A
-quickStartSite | contract | quickStartSite|N/A
-quickStartSite | budget | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStartSite | contract | quickStartSite|The user must be assigned to the specific approval.
+quickStartSite | budget | quickStartSite|The user must be assigned to the specific approval.
 
 ## QuickSTARTExtraDocumentUpload - <em>Upload QuickSTART Extra Document</em>
 
@@ -973,6 +949,7 @@ Uploads an extra document to the specified QuickSTART Site application.  The doc
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
@@ -982,7 +959,6 @@ quickStart | cro-contract | quickStart|N/A
 quickStartSite | rc | quickStartSite|N/A
 quickStartSite | contract | quickStartSite|N/A
 quickStartSite | budget | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
 
 ## QuickSTARTHistoryDelete - <em>QuickSTART Site Delete History</em>
 
@@ -1044,6 +1020,7 @@ Deletes a history record for a quickSTART site. The site must not be completed
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 
 ## QuickSTARTList - <em>QuickSTART List</em>
 
@@ -1102,9 +1079,11 @@ curl "https://ctoregistry.com/api/v1/quick-start/"
           "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]},
           "shortTitle": {"type": "string"},
           "sponsorInstitutionId": {"type": "object"},
-          "studyType": {"type": "string"},
-          "studyTypeOther": {"type": "string"},
-          "therapeuticArea": {"type": "string"},
+          "isSponsorManaged": {"type": "boolean"},
+          "isSingleSiteStudy": {"type": "boolean"},
+          "isStreamStudy": {"type": "boolean"},
+          "isSiteEngagement": {"type": "boolean"},
+          "isSponsorEngagement": {"type": "boolean"},
           "projectIdNumber": {"type": "number"},
           "reb": {
             "type": "object",
@@ -1118,9 +1097,11 @@ curl "https://ctoregistry.com/api/v1/quick-start/"
           "id",
           "quickStartIdentifier",
           "status",
-          "shortTitle",
-          "studyType",
-          "therapeuticArea",
+          "isSponsorManaged",
+          "isSingleSiteStudy",
+          "isStreamStudy",
+          "isSiteEngagement",
+          "isSponsorEngagement",
           "createDt",
           "updateDt"
         ]
@@ -1146,9 +1127,10 @@ Gets the list of all QuickSTART study applications that the user can access.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
-institution | quickStartSponsor | N/A|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor.
+institution | quickStartSponsor | N/A|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 quickStart | * | N/A|The data is filtered to only include QuickSTART and QuickSTART site applications that the user is participating on.
 quickStartSite | * | N/A|The data is filtered to only include QuickSTART and QuickSTART site applications that the user is participating on.
+institution | member | N/A|The data is filtered to only include QuickSTART and QuickSTART site applications that the user is participating on.
 
 ## QuickSTARTProfile - <em>QuickSTART Profile</em>
 
@@ -1192,8 +1174,16 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
         "therapeuticArea": {"type": "string"},
         "projectIdNumber": {"type": "number"},
         "studyId": {"type": "object"},
+        "sponsorInstitutionId": {"type": "object"},
+        "croInstitutionId": {"type": "object"},
+        "isPreScreenRequired": {"type": "boolean"},
+        "isSponsorManaged": {"type": "boolean"},
         "isSingleSiteStudy": {"type": "boolean"},
+        "isStreamStudy": {"type": "boolean"},
+        "isSiteEngagement": {"type": "boolean"},
+        "isSponsorEngagement": {"type": "boolean"},
         "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]},
+        "institutionIds": {"type": "array", "items": {"type": "object"}},
         "protocol": {
           "id": "/QuickStartProtocol",
           "type": "object",
@@ -1256,16 +1246,21 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
         },
         "creationProgress": {
           "type": "array",
-          "items": {"type": "string", "enum": ["study", "studyDocuments", "contract", "budget"]}
+          "items": {
+            "type": "string",
+            "enum": ["project", "sponsor", "study", "studyDocuments", "contract", "budget"]
+          }
         }
       },
       "required": [
         "id",
         "quickStartIdentifier",
-        "shortTitle",
-        "studyType",
-        "therapeuticArea",
+        "institutionIds",
+        "isSponsorManaged",
         "isSingleSiteStudy",
+        "isStreamStudy",
+        "isSiteEngagement",
+        "isSponsorEngagement",
         "creationProgress"
       ]
     },
@@ -1284,6 +1279,39 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
         "name": {"type": "string"}
       },
       "required": ["institutionId", "code", "name"]
+    },
+    "adminUsers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "id": "/QuickStartAdminUser",
+        "properties": {
+          "user": {
+            "id": "/UserShortProfile",
+            "properties": {
+              "id": {"type": "object"},
+              "username": {"type": "string"},
+              "contact": {
+                "type": "object",
+                "properties": {
+                  "firstName": {"type": "string"},
+                  "middleName": {"type": "string"},
+                  "lastName": {"type": "string"},
+                  "title": {
+                    "type": "string",
+                    "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
+                  }
+                },
+                "required": ["firstName", "lastName", "title"]
+              },
+              "institutionIds": {"type": "array", "items": {"type": "object"}}
+            },
+            "required": ["id", "username", "contact", "institutionIds"]
+          }
+        },
+        "required": ["user"]
+      },
+      "minItems": 1
     },
     "sponsorUsers": {
       "type": "array",
@@ -1317,7 +1345,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
         },
         "required": ["user", "role"]
       },
-      "minItems": 1
+      "minItems": 0
     },
     "cro": {
       "type": "object",
@@ -1363,7 +1391,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
       }
     }
   },
-  "required": ["quickStart", "sponsor", "sponsorUsers"]
+  "required": ["quickStart", "adminUsers"]
 }
 ```
 
@@ -1385,7 +1413,7 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTRebEventDelete - <em>QuickSTART Site Delete REB Event</em>
 
@@ -1446,6 +1474,7 @@ Removes one quick start site REB event that was previously recorded in the syste
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStartSite | rc | quickStartSite|N/A
 
 ## QuickSTARTRebEventSave - <em>QuickSTART Site REB Event Save</em>
@@ -1526,6 +1555,7 @@ Adds or updates an REB event for the related quick start site.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStartSite | rc | quickStartSite|N/A
 
 ## QuickSTARTSendToSite - <em>QuickSTART Send to Site</em>
@@ -1568,7 +1598,7 @@ curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:ins
 ```
 
 
-Sends a QuickSTART pre-screened application to the Site.  The site status must be 'review'
+Sends a QuickSTART pre-screened application to the Site.  If pre-screen is required, The site status must be 'review', if not it must be pending
 
 ### HTTP Request
 
@@ -1583,9 +1613,7 @@ Sends a QuickSTART pre-screened application to the Site.  The site status must b
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
-quickStart | sponsor | quickStart|N/A
-quickStart | cro | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSiteAddUser - <em>QuickSTART Site Add User</em>
 
@@ -1640,7 +1668,7 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:in
 ```
 
 
-Adds a user to a QuickSTART site with the specified role. The site must not be completed
+Adds a user to a QuickSTART site with the specified role
 
 ### HTTP Request
 
@@ -1655,13 +1683,17 @@ Adds a user to a QuickSTART site with the specified role. The site must not be c
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStartSite | rc | quickStartSite|N/A
-quickStart | sponsor | quickStart|N/A
-quickStart | cro | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
 quickStartSite | contract | quickStartSite|The user can only specify a role that they currently have.                        The user can only give themselves the read only role
 quickStartSite | budget | quickStartSite|The user can only specify a role that they currently have.                        The user can only give themselves the read only role
 quickStartSite | approver | quickStartSite|The user can only give themselves the read only role
+quickStart | sponsor | quickStart|N/A
+quickStart | sponsor-contract | quickStart|N/A
+quickStart | sponsor-budget | quickStart|N/A
+quickStart | cro | quickStart|N/A
+quickStart | cro-contract | quickStart|N/A
+quickStart | cro-budget | quickStart|N/A
 
 ## QuickSTARTSiteCompletePreScreen - <em>QuickSTART Complete Pre-Screen</em>
 
@@ -1787,6 +1819,7 @@ Updates an existing QuickSTART Site to disable notifications, set status updates
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSiteCreation - <em>QuickSTART Site Creation</em>
 
@@ -1815,7 +1848,7 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites"
       "researchCoordinatorId": {"type": "string"},
       "principalInvestigatorId": {"type": ["string", "null"]}
     },
-    "required": ["institutionId", "researchCoordinatorId"]
+    "required": ["institutionId"]
   }
 }
 ```
@@ -1838,7 +1871,7 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites"
 ```
 
 
-Adds a new site to an existing QuickSTART application
+Adds a new site to an existing QuickSTART application.  The creation process must be completed for all steps.  If this is a single site application an error will be returned if there is already a site
 
 ### HTTP Request
 
@@ -1853,8 +1886,9 @@ Adds a new site to an existing QuickSTART application
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStart | cro | quickStart|N/A
 
 ## QuickSTARTSiteDocumentDelete - <em>Delete an QuickSTART Document</em>
 
@@ -1915,13 +1949,16 @@ Deletes a specified document from an QuickSTART application
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStartSite | rc | quickStartSite|The related quickstart must not be marked as a sponsor engagement.
+quickStartSite | budget | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
+quickStartSite | contract | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
 
 ## QuickSTARTSiteDocumentDownload - <em>Download QuickSTART Document</em>
 
@@ -1970,8 +2007,6 @@ Downloads one document from the specified QuickSTART application.
     
  Scope      | Role       | Auth Source | Restrictions
 ------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 institution | quickStartSponsor | quickStart|N/A
 quickStartSite | * | quickStartSite|N/A
@@ -2062,13 +2097,16 @@ Uploads a document to the specified QuickSTART application.  The document inform
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStartSite | rc | quickStartSite|The related quickstart must not be marked as a sponsor engagement.
+quickStartSite | budget | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
+quickStartSite | contract | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
 
 ## QuickSTARTSitePauseEventDelete - <em>QuickSTART Site Delete Pause Event</em>
 
@@ -2129,6 +2167,7 @@ Deletes a pause event for an existing QuickSTART site.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSitePauseEventSave - <em>QuickSTART Site Save Pause Event</em>
 
@@ -2197,6 +2236,7 @@ Creates or updates a pause event for an existing QuickSTART site.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSitePreScreenComment - <em>QuickSTART Site Pre-Screen Comment</em>
 
@@ -2447,13 +2487,7 @@ Gets all comments for a QuickSTART Site Pre-Screen
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
-quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
-quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSiteProfile - <em>QuickSTART Site</em>
 
@@ -2490,6 +2524,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
       "id": "/QuickStartSiteProfile",
       "properties": {
         "id": {"type": "object"},
+        "quickStartId": {"type": "object"},
         "studyId": {
           "type": "object",
           "description": "If a stream project id number was set and there is a corresponding study in the system, the document id for the study."
@@ -2864,6 +2899,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
       },
       "required": [
         "id",
+        "quickStartId",
         "institutionId",
         "users",
         "status",
@@ -2998,7 +3034,7 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
+institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTSiteRecordSentDt - <em>QuickSTART Site Record Document Sent Date</em>
 
@@ -3064,13 +3100,16 @@ Updates an existing QuickSTART Site with the send date of a document, specified 
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
+quickStart | sponsor-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStart | sponsor-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
 quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStart | cro-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStart | cro-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStartSite | rc | quickStartSite|The related quickstart must not be marked as a sponsor engagement.
+quickStartSite | budget | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
+quickStartSite | contract | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
 
 ## QuickSTARTSiteRemoveUser - <em>QuickSTART Site Remove User</em>
 
@@ -3133,6 +3172,7 @@ Removes a user from a QuickSTART site. Restrictions are listed per role.  An err
 self | N/A | N/A|The user can only specify a role that they currently have.
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStartSite | rc | quickStartSite|N/A
 quickStartSite | contract | quickStartSite|The user can only specify a role that they currently have.
 quickStartSite | budget | quickStartSite|The user can only specify a role that they currently have.
@@ -3142,7 +3182,6 @@ quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
 
 ## QuickSTARTSiteResponse - <em>QuickSTART Site Response</em>
 
@@ -3211,13 +3250,16 @@ Submit a sponsor response for one section of data for a QuickSTART site
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
+quickStart | sponsor-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStart | sponsor-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
 quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
-institution | quickStartAdmin | quickStart|N/A
+quickStart | cro-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStart | cro-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.
+quickStartSite | rc | quickStartSite|The related quickstart must not be marked as a sponsor engagement.
+quickStartSite | budget | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
+quickStartSite | contract | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
 
 ## QuickSTARTSiteRestore - <em>QuickSTART Site Restore Defaults</em>
 
@@ -3278,13 +3320,16 @@ Updates an existing QuickSTART Site portion to use the defaults from the overall
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStartSite | rc | quickStartSite|The related quickstart must not be marked as a sponsor engagement.
+quickStartSite | budget | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
+quickStartSite | contract | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
 
 ## QuickSTARTSiteReview - <em>QuickSTART Site Review</em>
 
@@ -3353,6 +3398,13 @@ Submit a review for one section of data for a QuickSTART site.  The site status 
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
+quickStart | sponsor | quickStart|The related quickstart must not be marked as a sponsor engagement.
+quickStart | sponsor-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a sponsor engagement.
+quickStart | sponsor-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a sponsor engagement.
+quickStart | cro | quickStart|N/A
+quickStart | cro-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a sponsor engagement.
+quickStart | cro-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a sponsor engagement.
 quickStartSite | rc | quickStartSite|N/A
 quickStartSite | budget | quickStartSite|The user must be assigned to the specific approval.
 quickStartSite | contract | quickStartSite|The user must be assigned to the specific approval.
@@ -3421,6 +3473,7 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:in
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
@@ -3428,11 +3481,10 @@ quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
 quickStartSite | rc | quickStartSite|N/A
-quickStartSite | investigator | quickStartSite|N/A
-quickStartSite | approver | quickStartSite|N/A
 quickStartSite | contract | quickStartSite|N/A
 quickStartSite | budget | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStartSite | investigator | quickStartSite|N/A
+quickStartSite | approver | quickStartSite|N/A
 
 ## QuickSTARTSiteSendToPreScreen - <em>QuickSTART Site Send to Pre-Screen</em>
 
@@ -3489,9 +3541,13 @@ Sends a QuickSTART Site to Pre-Screen with CTO.  The site status must be 'pendin
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
+quickStart | sponsor-contract | quickStart|N/A
+quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStart | cro-contract | quickStart|N/A
+quickStart | cro-budget | quickStart|N/A
 
 ## QuickSTARTSiteUpdate - <em>QuickSTART Site Update</em>
 
@@ -3549,13 +3605,16 @@ Updates an existing QuickSTART Site portion of an application in the system. If 
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+quickStartSite | rc | quickStartSite|The related quickstart must not be marked as a sponsor engagement.
+quickStartSite | budget | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
+quickStartSite | contract | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
 
 ## QuickSTARTSiteUpdateTimers - <em>QuickSTART Site Update Timers</em>
 
@@ -3637,6 +3696,7 @@ Updates an existing QuickSTART Site Timers in the system. If the site is complet
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSites - <em>QuickSTART Sites</em>
 
@@ -3793,7 +3853,7 @@ Gets all the basic info related to the sites on the quickStart application.
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
+institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 quickStartSite | * | quickStart|The data is filtered to only include QuickSTART and QuickSTART site applications that the user is participating on.
 
 ## QuickSTARTUpdate - <em>QuickSTART Update</em>
@@ -3825,8 +3885,60 @@ curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
       },
       "creationProgress": {
         "type": "array",
-        "items": {"type": "string", "enum": ["study", "studyDocuments", "contract", "budget"]},
+        "items": {
+          "type": "string",
+          "enum": ["project", "sponsor", "study", "studyDocuments", "contract", "budget"]
+        },
         "description": "any strings passed in will update the quick start creation progress status to true for that key.  Has no effect if quick start site id is passed"
+      },
+      "adminUsers": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "object",
+          "properties": {"userId": {"type": "string"}},
+          "required": ["userId"]
+        }
+      },
+      "isSingleSiteStudy": {"type": "boolean"},
+      "isSiteEngagement": {"type": "boolean"},
+      "isSponsorEngagement": {"type": "boolean"},
+      "isStreamStudy": {"type": "boolean"},
+      "quickStartIdentifier": {"type": ["string", "null"]},
+      "projectIdNumber": {"type": ["number", "null"]},
+      "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]},
+      "shortTitle": {"type": "string"},
+      "studyType": {"type": "string", "enum": ["phase1", "phase2", "phase3", "phase4", "other"]},
+      "studyTypeOther": {"type": ["string", "null"]},
+      "therapeuticArea": {"type": "string"},
+      "sponsorInstitutionId": {"type": "string"},
+      "sponsorUsers": {
+        "type": "array",
+        "minItems": 0,
+        "uniqueItems": true,
+        "items": {
+          "type": "object",
+          "properties": {
+            "userId": {"type": "string"},
+            "role": {"type": "string", "enum": ["full", "contract", "budget"]}
+          },
+          "required": ["userId", "role"]
+        }
+      },
+      "croInstitutionId": {"type": ["string", "null"]},
+      "croUsers": {
+        "type": "array",
+        "minItems": 0,
+        "uniqueItems": true,
+        "items": {
+          "type": "object",
+          "properties": {
+            "userId": {"type": "string"},
+            "role": {"type": "string", "enum": ["full", "contract", "budget"]}
+          },
+          "required": ["userId", "role"]
+        }
       }
     },
     "required": []
@@ -3867,13 +3979,13 @@ Updates an existing QuickSTART application in the system.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | sponsor-contract | quickStart|N/A
 quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | quickStart|N/A
 
 ## QuickStartCheckUniqueProjectIdNumber - <em>Check QuickSTART unique stream project Id number</em>
 
@@ -3920,18 +4032,7 @@ Checks to see if a QuickSTART stream project Id number is already in use or not.
 
 ### Authorization
  
-    
- Scope      | Role       | Auth Source | Restrictions
-------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
-quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
-quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | N/A|N/A
+N/A
 
 ## QuickStartCheckUniqueQuickStartIdentifier - <em>Check QuickSTART unique Identifier</em>
 
@@ -3978,18 +4079,7 @@ Checks to see if a QuickSTART Identifier is already in use or not.
 
 ### Authorization
  
-    
- Scope      | Role       | Auth Source | Restrictions
-------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
-quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
-quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | N/A|N/A
+N/A
 
 ## QuickStartCheckUniqueShortTitle - <em>Check QuickSTART unique short title</em>
 
@@ -4036,15 +4126,4 @@ Checks to see if a QuickSTART short title is already in use or not.
 
 ### Authorization
  
-    
- Scope      | Role       | Auth Source | Restrictions
-------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
-quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
-quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
-institution | quickStartSponsor | N/A|N/A
+N/A

@@ -320,8 +320,12 @@ curl "https://ctoregistry.com/api/v1/study/"
       "sortby": {"type": "string"},
       "order": {"type": "string"},
       "search": {"type": "string"},
-      "status": {"type": "string"},
+      "status": {"type": ["string", "array"]},
       "csv": {"type": "boolean"},
+      "centreInstitutionIds": {
+        "type": ["string", "array"],
+        "description": "an array of centre institution IDs"
+      },
       "institutionIds": {
         "type": ["string", "array"],
         "description": "an array of sponsor institution IDs"

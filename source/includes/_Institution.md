@@ -217,7 +217,7 @@ curl -X POST "https://ctoregistry.com/api/v1/institution/"
           "postalCode": {"type": "string", "maxLength": 10},
           "locality": {"type": "string"},
           "region": {"type": "string"},
-          "countryName": {"type": "string"}
+          "countryName": {"type": ["string", "null"]}
         },
         "required": ["streetAddress", "postalCode", "locality", "region"]
       },
@@ -609,7 +609,7 @@ curl "https://ctoregistry.com/api/v1/institution/"
       "sortby": {"type": "string"},
       "order": {"type": "string"},
       "search": {"type": "string"},
-      "status": {"type": "string"},
+      "status": {"type": ["string", "array"]},
       "csv": {"type": "boolean"},
       "types": {"type": ["string", "array"], "items": {"type": "string"}}
     }
@@ -796,22 +796,22 @@ curl -X PUT "https://ctoregistry.com/api/v1/institution/:institutionId/payee"
     "id": "/InstitutionPayeeUpdateBody",
     "properties": {
       "institutionId": {"type": "string"},
-      "name": {"type": "string"},
+      "name": {"type": ["string", "null"]},
       "address": {
         "id": "/PayeeAddressBody",
         "type": "object",
         "properties": {
-          "streetAddress": {"type": "string", "description": "Street address"},
+          "streetAddress": {"type": ["string", "null"], "description": "Street address"},
           "extendedAddress": {
             "type": "array",
             "items": {"type": "string"},
             "minItems": 0,
             "maxItems": 5
           },
-          "postalCode": {"type": "string", "maxLength": 10},
-          "locality": {"type": "string"},
-          "region": {"type": "string"},
-          "countryName": {"type": "string"}
+          "postalCode": {"type": ["string", "null"], "maxLength": 10},
+          "locality": {"type": ["string", "null"]},
+          "region": {"type": ["string", "null"]},
+          "countryName": {"type": ["string", "null"]}
         },
         "required": []
       },
@@ -841,7 +841,7 @@ curl -X PUT "https://ctoregistry.com/api/v1/institution/:institutionId/payee"
         "description": "if omitted, defaults from the linked institution will be used."
       }
     },
-    "required": ["name"]
+    "required": []
   }
 }
 ```
@@ -1591,7 +1591,7 @@ curl -X PUT "https://ctoregistry.com/api/v1/institution/:institutionId"
           "postalCode": {"type": "string", "maxLength": 10},
           "locality": {"type": "string"},
           "region": {"type": "string"},
-          "countryName": {"type": "string"}
+          "countryName": {"type": ["string", "null"]}
         },
         "required": ["streetAddress", "postalCode", "locality", "region"]
       },
@@ -1616,7 +1616,7 @@ curl -X PUT "https://ctoregistry.com/api/v1/institution/:institutionId"
       },
       "test": {"type": "boolean"}
     },
-    "required": ["name", "type", "status", "address", "phones"]
+    "required": ["name", "code", "address", "phones", "type", "status"]
   },
   "params": {
     "id": "/InstitutionParams",

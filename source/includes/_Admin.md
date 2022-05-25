@@ -725,7 +725,7 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId/issues"
       "sortby": {"type": "string"},
       "order": {"type": "string"},
       "search": {"type": "string"},
-      "status": {"type": "string"},
+      "status": {"type": ["string", "array"]},
       "csv": {"type": "boolean"}
     }
   }
@@ -758,8 +758,10 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId/issues"
           "taskLogId": {"type": "object"},
           "rownum": {"type": "string"},
           "issueType": {"type": "string"},
+          "messageId": {"type": ["string", "null"]},
           "issue": {"type": ["string"]},
           "isResolved": {"type": "boolean"},
+          "isResolvedPreviously": {"type": "boolean"},
           "rawData": {"type": ["object", "string"]},
           "data": {
             "properties": {
@@ -771,7 +773,7 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId/issues"
             }
           }
         },
-        "required": ["id", "data", "taskLogId", "issueType", "isResolved"]
+        "required": ["id", "data", "taskLogId", "issueType", "isResolved", "isResolvedPreviously"]
       }
     }
   },
@@ -821,13 +823,17 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs"
           "runDt": {"type": "date"},
           "issues": {
             "type": "object",
-            "properties": {"total": {"type": "integer"}, "resolved": {"type": "integer"}},
-            "required": ["total", "resolved"]
+            "properties": {
+              "total": {"type": "integer"},
+              "resolvedPreviously": {"type": "integer"},
+              "resolved": {"type": "integer"}
+            },
+            "required": ["total", "resolvedPreviously", "resolved"]
           },
           "results": {
             "type": "object",
             "properties": {"total": {"type": "integer"}, "errors": {"type": "integer"}},
-            "required": ["total", "errors"]
+            "required": []
           },
           "error": {"type": ["object", "any"]}
         },
@@ -973,13 +979,17 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/list"
           "runDt": {"type": "date"},
           "issues": {
             "type": "object",
-            "properties": {"total": {"type": "integer"}, "resolved": {"type": "integer"}},
-            "required": ["total", "resolved"]
+            "properties": {
+              "total": {"type": "integer"},
+              "resolvedPreviously": {"type": "integer"},
+              "resolved": {"type": "integer"}
+            },
+            "required": ["total", "resolvedPreviously", "resolved"]
           },
           "results": {
             "type": "object",
             "properties": {"total": {"type": "integer"}, "errors": {"type": "integer"}},
-            "required": ["total", "errors"]
+            "required": []
           },
           "error": {"type": ["object", "any"]}
         },
@@ -1046,13 +1056,17 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId"
         "runDt": {"type": "date"},
         "issues": {
           "type": "object",
-          "properties": {"total": {"type": "integer"}, "resolved": {"type": "integer"}},
-          "required": ["total", "resolved"]
+          "properties": {
+            "total": {"type": "integer"},
+            "resolvedPreviously": {"type": "integer"},
+            "resolved": {"type": "integer"}
+          },
+          "required": ["total", "resolvedPreviously", "resolved"]
         },
         "results": {
           "type": "object",
           "properties": {"total": {"type": "integer"}, "errors": {"type": "integer"}},
-          "required": ["total", "errors"]
+          "required": []
         },
         "error": {"type": ["object", "any"]}
       },

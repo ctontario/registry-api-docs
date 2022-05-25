@@ -69,6 +69,7 @@ Error Code | HTTP Status Code | Error Type | Description
 <small>28001</small> | <small>400</small> | <small>FUNDING_INVOICE_OVERPAID</small> | <small>The invoice was overpaid</small>
 <small>28002</small> | <small>400</small> | <small>FUNDING_INVOICE_PAYMENTS_SENT</small> | <small>Payments have been sent already for this invoice</small>
 <small>28003</small> | <small>400</small> | <small>FUNDING_PAYMENT_VOID_INVOICE</small> | <small>The payment includes void invoices that cannot have payments recorded to them.</small>
+<small>28004</small> | <small>400</small> | <small>FUNDING_INVOICE_INSTITUTION_MISMATCH</small> | <small>A CIA has been sorted in order that doesn't match the existing invoices institution.  Data must be corrected</small>
 <small>28101</small> | <small>400</small> | <small>FUNDING_PAYMENT_LOCKED</small> | <small>The payment is locked due to payouts already taking place.</small>
 <small>28102</small> | <small>400</small> | <small>FUNDING_PAYMENT_VOID</small> | <small>The payment is void and cannot be edited.</small>
 <small>90100</small> | <small>401</small> | <small>UNAUTHENTICATED</small> | <small>Not authenticated to access this resource</small>

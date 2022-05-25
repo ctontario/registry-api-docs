@@ -439,7 +439,7 @@ curl -X POST "https://ctoregistry.com/api/v1/visitor/"
               "postalCode": {"type": "string", "maxLength": 10},
               "locality": {"type": "string"},
               "region": {"type": "string"},
-              "countryName": {"type": "string"}
+              "countryName": {"type": ["string", "null"]}
             },
             "required": ["streetAddress", "postalCode", "locality", "region"]
           },

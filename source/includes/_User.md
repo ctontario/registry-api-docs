@@ -237,7 +237,7 @@ curl -X POST "https://ctoregistry.com/api/v1/user/"
               "postalCode": {"type": "string", "maxLength": 10},
               "locality": {"type": "string"},
               "region": {"type": "string"},
-              "countryName": {"type": "string"}
+              "countryName": {"type": ["string", "null"]}
             },
             "required": ["streetAddress", "postalCode", "locality", "region"]
           },
@@ -726,7 +726,7 @@ curl -X POST "https://ctoregistry.com/api/v1/user/:userId/institution"
           "postalCode": {"type": "string", "maxLength": 10},
           "locality": {"type": "string"},
           "region": {"type": "string"},
-          "countryName": {"type": "string"}
+          "countryName": {"type": ["string", "null"]}
         },
         "required": ["streetAddress", "postalCode", "locality", "region"]
       },
@@ -1112,7 +1112,7 @@ curl -X POST "https://ctoregistry.com/api/v1/user/:userId/institution/:instituti
           "postalCode": {"type": "string", "maxLength": 10},
           "locality": {"type": "string"},
           "region": {"type": "string"},
-          "countryName": {"type": "string"}
+          "countryName": {"type": ["string", "null"]}
         },
         "required": ["streetAddress", "postalCode", "locality", "region"]
       },
@@ -1937,9 +1937,11 @@ curl "https://ctoregistry.com/api/v1/user/:userId/quick-start"
           "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]},
           "shortTitle": {"type": "string"},
           "sponsorInstitutionId": {"type": "object"},
-          "studyType": {"type": "string"},
-          "studyTypeOther": {"type": "string"},
-          "therapeuticArea": {"type": "string"},
+          "isSponsorManaged": {"type": "boolean"},
+          "isSingleSiteStudy": {"type": "boolean"},
+          "isStreamStudy": {"type": "boolean"},
+          "isSiteEngagement": {"type": "boolean"},
+          "isSponsorEngagement": {"type": "boolean"},
           "projectIdNumber": {"type": "number"},
           "reb": {
             "type": "object",
@@ -1953,9 +1955,11 @@ curl "https://ctoregistry.com/api/v1/user/:userId/quick-start"
           "id",
           "quickStartIdentifier",
           "status",
-          "shortTitle",
-          "studyType",
-          "therapeuticArea",
+          "isSponsorManaged",
+          "isSingleSiteStudy",
+          "isStreamStudy",
+          "isSiteEngagement",
+          "isSponsorEngagement",
           "createDt",
           "updateDt"
         ]
@@ -2046,11 +2050,7 @@ Searches for users whose name or email matches the search string.
 
 ### Authorization
  
-    
- Scope      | Role       | Auth Source | Restrictions
-------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | support | N/A|N/A
+N/A
 
 ## UserShortProfile - <em>Get User Short Profile</em>
 

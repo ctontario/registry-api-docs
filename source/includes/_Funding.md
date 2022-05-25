@@ -846,26 +846,29 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
       "sortby": {"type": "string"},
       "order": {"type": "string"},
       "search": {"type": "string"},
-      "status": {"type": "string"},
+      "status": {"type": ["string", "array"]},
       "csv": {"type": "boolean"},
       "payeeIds": {"type": ["string", "array"], "description": "an array of payee institution IDs"},
       "committeeIds": {"type": ["string", "array"], "description": "an array of committee IDs"},
       "payeeLinked": {
         "type": "string",
         "enum": ["notLinked", "linked", "all"],
-        "description": "an array of payee institution IDs"
+        "description": "whether to include linked payees or not"
       },
       "invoiceCondition": {
-        "type": "string",
-        "enum": [
-          "initial2Sites",
-          "firstBracket",
-          "secondBracket",
-          "finalBracket",
-          "renewalFee",
-          "amendmentFee",
-          "all"
-        ],
+        "type": ["string", "array"],
+        "items": {
+          "type": "string",
+          "enum": [
+            "initial2Sites",
+            "firstBracket",
+            "secondBracket",
+            "finalBracket",
+            "renewalFee",
+            "amendmentFee",
+            "all"
+          ]
+        },
         "description": "the invoice condition, or all"
       }
     }
@@ -905,6 +908,7 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
           "feesName": {"type": "string"},
           "feesDt": {},
           "isVoid": {"type": "boolean"},
+          "currentDocumentVersion": {"type": "number"},
           "reb": {
             "type": "object",
             "properties": {"id": {"type": "object"}, "name": {"type": "string"}},
@@ -987,6 +991,7 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
           "feesName",
           "feesDt",
           "isVoid",
+          "currentDocumentVersion",
           "reb",
           "institutions",
           "payee",
@@ -1260,6 +1265,67 @@ Updates an invoice total, should be used only be admin and not be used after pay
 system | admin | N/A|N/A
 system | funding | N/A|N/A
 
+## StudyFundingInvoiceUpdateValue - <em>Study Funding Update Invoice Value</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/funding/invoices/:invoiceId/update-value"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingInvoiceUpdateValueParams",
+    "properties": {"invoiceId": {"type": "string"}},
+    "required": ["invoiceId"]
+  },
+  "body": {
+    "id": "StudyFundingInvoiceUpdateValueBody",
+    "type": "object",
+    "properties": {"value": {"type": "number"}, "note": {"type": "string"}},
+    "required": ["value"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Updates an invoice value, should be used only be admin and not be used after payments sent.  This could affect the condition generated for an invoice, so use with care
+
+### HTTP Request
+
+`POST /funding/invoices/:invoiceId/update-value`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
 ## StudyFundingList - <em>Get Study Fundings</em>
 
 
@@ -1282,13 +1348,14 @@ curl "https://ctoregistry.com/api/v1/funding/"
       "sortby": {"type": "string"},
       "order": {"type": "string"},
       "search": {"type": "string"},
-      "status": {"type": "string"},
+      "status": {"type": ["string", "array"]},
       "csv": {"type": "boolean"},
       "payeeIds": {"type": ["string", "array"], "description": "an array of payee institution IDs"},
+      "feesStatus": {"type": "string", "enum": ["hasFees", "noFees", "all"]},
       "payeeLinked": {
         "type": "string",
         "enum": ["notLinked", "linked", "all"],
-        "description": "an array of payee institution IDs"
+        "description": "whether to include linked payees or not"
       },
       "committeeIds": {"type": ["string", "array"], "description": "an array of committee IDs"}
     }
@@ -1331,7 +1398,42 @@ curl "https://ctoregistry.com/api/v1/funding/"
             "required": ["name"]
           },
           "payee": {
-            "properties": {"id": {"type": "object"}, "name": {"type": ["string", "null"]}},
+            "id": "StudyFundingPayee",
+            "properties": {
+              "id": {"type": "object"},
+              "name": {"type": ["string", "null"]},
+              "address": {
+                "id": "/Address",
+                "type": "object",
+                "properties": {
+                  "streetAddress": {"type": "string"},
+                  "locality": {"type": "string"},
+                  "region": {"type": "string"},
+                  "postalCode": {"type": "string"},
+                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "countryName": {"type": ["string", "null"]}
+                },
+                "required": []
+              },
+              "contact": {
+                "properties": {
+                  "userId": {"type": ["object", "null"]},
+                  "name": {"type": ["string", "null"]},
+                  "email": {"type": ["string", "null"]},
+                  "phones": {"type": "array", "items": {"type": "string"}}
+                },
+                "required": []
+              },
+              "invoiceDisplayValues": {
+                "type": "array",
+                "items": {
+                  "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+                  "required": ["label", "value"]
+                }
+              },
+              "invoiceCCEmails": {"type": "array", "items": {"type": "string"}},
+              "daysToPay": {"type": "number"}
+            },
             "required": ["name"]
           },
           "createDt": {"type": "date"},
@@ -1406,17 +1508,17 @@ curl -X PUT "https://ctoregistry.com/api/v1/funding/:studyFundingId/payee"
         "id": "/PayeeAddressBody",
         "type": "object",
         "properties": {
-          "streetAddress": {"type": "string", "description": "Street address"},
+          "streetAddress": {"type": ["string", "null"], "description": "Street address"},
           "extendedAddress": {
             "type": "array",
             "items": {"type": "string"},
             "minItems": 0,
             "maxItems": 5
           },
-          "postalCode": {"type": "string", "maxLength": 10},
-          "locality": {"type": "string"},
-          "region": {"type": "string"},
-          "countryName": {"type": "string"}
+          "postalCode": {"type": ["string", "null"], "maxLength": 10},
+          "locality": {"type": ["string", "null"]},
+          "region": {"type": ["string", "null"]},
+          "countryName": {"type": ["string", "null"]}
         },
         "required": []
       },
@@ -1572,8 +1674,8 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
         "description": "whether to include linked payees or not"
       },
       "paymentType": {
-        "type": "string",
-        "enum": ["all", "reb", "sponsor", "institution"],
+        "type": ["string", "array"],
+        "items": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
         "description": "The payment type to filter by"
       }
     }
@@ -1849,6 +1951,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
                   "feesOverride",
                   "note",
                   "updateTotal",
+                  "updateValue",
                   "sendInitial",
                   "sendReminder",
                   "sendUpdate",
@@ -1856,6 +1959,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
                   "document_update",
                   "institution_add",
                   "institution_update",
+                  "institution_link",
                   "payment_reb_create",
                   "payment_reb_update",
                   "payment_reb_delete",
@@ -1948,7 +2052,7 @@ curl -X POST "https://ctoregistry.com/api/v1/funding/payments/:paymentId?"
               "postalCode": {"type": "string", "maxLength": 10},
               "locality": {"type": "string"},
               "region": {"type": "string"},
-              "countryName": {"type": "string"}
+              "countryName": {"type": ["string", "null"]}
             },
             "required": []
           },
@@ -2151,6 +2255,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
                     "feesOverride",
                     "note",
                     "updateTotal",
+                    "updateValue",
                     "sendInitial",
                     "sendReminder",
                     "sendUpdate",
@@ -2158,6 +2263,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
                     "document_update",
                     "institution_add",
                     "institution_update",
+                    "institution_link",
                     "payment_reb_create",
                     "payment_reb_update",
                     "payment_reb_delete",
@@ -2416,6 +2522,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                             "feesOverride",
                             "note",
                             "updateTotal",
+                            "updateValue",
                             "sendInitial",
                             "sendReminder",
                             "sendUpdate",
@@ -2423,6 +2530,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                             "document_update",
                             "institution_add",
                             "institution_update",
+                            "institution_link",
                             "payment_reb_create",
                             "payment_reb_update",
                             "payment_reb_delete",
