@@ -308,6 +308,8 @@ curl "https://ctoregistry.com/api/v1/dictionary/institution"
           "code": {"type": "string"},
           "name": {"type": "string"},
           "type": {"type": "string"},
+          "committeeId": {"type": "object", "description": "the associated committee ID"},
+          "legalEntityId": {"type": "object", "description": "the associated legal entity ID"},
           "typeLabel": {"type": "string"},
           "locality": {"type": "string"},
           "region": {"type": "string"},
@@ -714,7 +716,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId/payee"
     "institutionPayee": {
       "id": "/InstitutionPayee",
       "properties": {
-        "id": {"type": "object"},
+        "institutionId": {"type": "object"},
         "name": {"type": ["string", "null"]},
         "address": {
           "id": "/Address",
@@ -819,7 +821,8 @@ curl -X PUT "https://ctoregistry.com/api/v1/institution/:institutionId/payee"
         "properties": {
           "name": {"type": "string"},
           "phones": {"type": "array", "items": {"type": "string"}},
-          "email": {"type": "string"}
+          "email": {"type": "string"},
+          "userId": {"type": "string"}
         },
         "required": ["email"]
       },

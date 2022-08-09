@@ -92,7 +92,7 @@ curl -X DELETE "https://ctoregistry.com/api/v1/funding/:studyFundingId/documents
     "type": "object",
     "properties": {
       "studyFundingId": {"type": "string"},
-      "type": {"type": "string", "enum": ["fundingHstExemption", "invoice"]},
+      "type": {"type": "string", "enum": ["fundingHstExemption", "invoice", "paymentSummary"]},
       "documentId": {"type": "string"}
     },
     "required": ["studyFundingId", "type", "documentId"]
@@ -152,7 +152,7 @@ curl "https://ctoregistry.com/api/v1/download/funding/:studyFundingId/documents/
     "type": "object",
     "properties": {
       "studyFundingId": {"type": "string"},
-      "type": {"type": "string", "enum": ["fundingHstExemption", "invoice"]},
+      "type": {"type": "string", "enum": ["fundingHstExemption", "invoice", "paymentSummary"]},
       "documentId": {"type": "string"}
     },
     "required": ["studyFundingId", "type", "documentId"]
@@ -214,7 +214,7 @@ curl -X POST "https://ctoregistry.com/api/v1/upload/funding/:studyFundingId/:typ
     "type": "object",
     "properties": {
       "studyFundingId": {"type": "string"},
-      "type": {"type": "string", "enum": ["fundingHstExemption", "invoice"]}
+      "type": {"type": "string", "enum": ["fundingHstExemption", "invoice", "paymentSummary"]}
     },
     "required": ["studyFundingId", "type"]
   }
@@ -704,7 +704,7 @@ curl "https://ctoregistry.com/api/v1/funding/institution-search/:searchString?"
           "institutionPayee": {
             "id": "/InstitutionPayee",
             "properties": {
-              "id": {"type": "object"},
+              "institutionId": {"type": "object"},
               "name": {"type": ["string", "null"]},
               "address": {
                 "id": "/Address",
@@ -925,7 +925,7 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
           "payee": {
             "id": "StudyFundingPaymentPayee",
             "properties": {
-              "id": {"type": "object"},
+              "institutionId": {"type": "object"},
               "name": {"type": ["string", "null"]},
               "address": {
                 "id": "/Address",
@@ -1400,7 +1400,7 @@ curl "https://ctoregistry.com/api/v1/funding/"
           "payee": {
             "id": "StudyFundingPayee",
             "properties": {
-              "id": {"type": "object"},
+              "institutionId": {"type": "object"},
               "name": {"type": ["string", "null"]},
               "address": {
                 "id": "/Address",
@@ -1526,7 +1526,8 @@ curl -X PUT "https://ctoregistry.com/api/v1/funding/:studyFundingId/payee"
         "properties": {
           "name": {"type": "string"},
           "phones": {"type": "array", "items": {"type": "string"}},
-          "email": {"type": "string"}
+          "email": {"type": "string"},
+          "userId": {"type": "string"}
         },
         "required": ["email"]
       },
@@ -1627,7 +1628,7 @@ curl -X DELETE "https://ctoregistry.com/api/v1/funding/payments/:paymentId?"
 ```
 
 
-Deletes a payment.  Payments cannot be deleted if REB payouts have already happened.
+Deletes a payment.  Payments cannot be deleted if REB payouts have already happened or if it has been included in a summary
 
 ### HTTP Request
 
@@ -1665,7 +1666,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
       "sortby": {"type": "string"},
       "order": {"type": "string"},
       "search": {"type": "string"},
-      "status": {"type": "string"},
+      "status": {"type": ["string", "array"]},
       "csv": {"type": "boolean"},
       "payeeIds": {"type": ["string", "array"], "description": "an array of payee institution IDs"},
       "payeeLinked": {
@@ -1707,8 +1708,11 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
         "properties": {
           "id": {"type": "object"},
           "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+          "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
           "paymentNumber": {"type": "string"},
           "paymentReference": {"type": "string"},
+          "paymentSummaryId": {"type": "object"},
+          "paymentSummaryNumber": {"type": "string"},
           "quickBooksId": {"type": "string"},
           "paymentDt": {"type": "date"},
           "isVoid": {"type": "boolean"},
@@ -1718,7 +1722,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
           "payee": {
             "id": "StudyFundingPaymentPayee",
             "properties": {
-              "id": {"type": "object"},
+              "institutionId": {"type": "object"},
               "name": {"type": ["string", "null"]},
               "address": {
                 "id": "/Address",
@@ -1789,6 +1793,8 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
         },
         "required": [
           "id",
+          "paymentType",
+          "paymentReason",
           "paymentNumber",
           "totalPayment",
           "invoicePaymentCount",
@@ -1857,6 +1863,9 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
         "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
         "paymentNumber": {"type": "string"},
         "paymentReference": {"type": "string"},
+        "paymentSummaryId": {"type": "object"},
+        "paymentSummaryNumber": {"type": "string"},
+        "sentInSummary": {"type": "boolean"},
         "quickBooksId": {"type": "string"},
         "paymentDt": {"type": "date"},
         "isVoid": {"type": "boolean"},
@@ -1868,7 +1877,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
         "payee": {
           "id": "StudyFundingPaymentPayee",
           "properties": {
-            "id": {"type": "object"},
+            "institutionId": {"type": "object"},
             "name": {"type": ["string", "null"]},
             "address": {
               "id": "/Address",
@@ -2121,6 +2130,977 @@ Records or updates a payment.  To update a payment, pass the paymentId as part o
 system | admin | N/A|N/A
 system | funding | N/A|N/A
 
+## StudyFundingPaymentSummaryCreate - <em>Save Study Funding Payment Summary Profile</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/funding/payment-summary"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingPaymentSummaryParams",
+    "type": "object",
+    "properties": {"paymentSummaryId": {"type": "string"}},
+    "required": []
+  },
+  "body": {
+    "id": "/StudyFundingPaymentSummaryBody",
+    "type": "object",
+    "properties": {
+      "paymentDt": {"type": "string", "format": "date-time"},
+      "startDt": {"type": "string", "format": "date-time"},
+      "endDt": {"type": "string", "format": "date-time"},
+      "paymentIds": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+      "payee": {
+        "id": "/StudyFundingSummaryPayeeBody",
+        "properties": {
+          "institutionId": {"type": "string"},
+          "name": {"type": "string"},
+          "address": {
+            "id": "/PayeeAddressBody",
+            "type": "object",
+            "properties": {
+              "streetAddress": {"type": ["string", "null"], "description": "Street address"},
+              "extendedAddress": {
+                "type": "array",
+                "items": {"type": "string"},
+                "minItems": 0,
+                "maxItems": 5
+              },
+              "postalCode": {"type": ["string", "null"], "maxLength": 10},
+              "locality": {"type": ["string", "null"]},
+              "region": {"type": ["string", "null"]},
+              "countryName": {"type": ["string", "null"]}
+            },
+            "required": []
+          },
+          "contact": {
+            "properties": {
+              "name": {"type": "string"},
+              "phones": {"type": "array", "items": {"type": "string"}},
+              "email": {"type": "string"},
+              "userId": {"type": "string"}
+            },
+            "required": []
+          },
+          "invoiceDisplayValues": {
+            "type": "array",
+            "description": "if omitted, defaults from the linked institution will be used.",
+            "items": {
+              "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+              "required": ["label", "value"]
+            }
+          },
+          "invoiceCCEmails": {
+            "type": "array",
+            "description": "if omitted, defaults from the linked institution will be used.",
+            "items": {"type": "string"}
+          },
+          "daysToPay": {
+            "type": "number",
+            "description": "if omitted, defaults from the linked institution will be used."
+          }
+        },
+        "required": ["name"]
+      }
+    },
+    "required": ["payee", "paymentIds"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Save the details for one payment summary
+
+### HTTP Request
+
+`POST /funding/payment-summary`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSummaryDelete - <em>Delete Study Funding Payment Summary</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingPaymentSummaryProfileParams",
+    "type": "object",
+    "properties": {"paymentSummaryId": {"type": "string"}},
+    "required": ["paymentSummaryId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Deletes one payment summary
+
+### HTTP Request
+
+`DELETE /funding/payment-summary/:paymentSummaryId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSummaryDocumentDownload - <em>Download Study Funding Payment Summary Document</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/download/funding/payment-summary/:paymentSummaryId/documents/:documentId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingPaymentSummaryDocumentDownloadParams",
+    "type": "object",
+    "properties": {"paymentSummaryId": {"type": "string"}, "documentId": {"type": "string"}},
+    "required": ["paymentSummaryId", "documentId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+undefined
+```
+
+
+Downloads one document from the specified study funding payment summary.
+
+### HTTP Request
+
+`GET /download/funding/payment-summary/:paymentSummaryId/documents/:documentId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSummaryList - <em>Get Study Funding Payment Summary List</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/funding/payment-summary"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "query": {
+    "id": "/StudyFundingPaymentSummaryListQuery",
+    "type": "object",
+    "properties": {
+      "offset": {"type": "integer", "minimum": 0, "default": 0},
+      "limit": {"type": "integer", "minimum": 0, "default": 20},
+      "sortby": {"type": "string"},
+      "order": {"type": "string"},
+      "search": {"type": "string"},
+      "status": {"type": "string"},
+      "csv": {"type": "boolean"},
+      "payeeIds": {"type": ["string", "array"], "description": "an array of payee institution IDs"}
+    }
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/StudyFundingPaymentSummaryListResponse",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "id": "/ListMeta",
+      "properties": {
+        "count": {"type": "number"},
+        "limit": {"type": "number"},
+        "offset": {"type": "number"}
+      },
+      "required": ["count", "limit", "offset"]
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "StudyFundingPaymentSummary",
+        "type": "object",
+        "properties": {
+          "id": {"type": "object"},
+          "paymentSummaryNumber": {"type": "string"},
+          "paymentDt": {"type": "date"},
+          "payee": {
+            "id": "StudyFundingPayee",
+            "properties": {
+              "institutionId": {"type": "object"},
+              "name": {"type": ["string", "null"]},
+              "address": {
+                "id": "/Address",
+                "type": "object",
+                "properties": {
+                  "streetAddress": {"type": "string"},
+                  "locality": {"type": "string"},
+                  "region": {"type": "string"},
+                  "postalCode": {"type": "string"},
+                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "countryName": {"type": ["string", "null"]}
+                },
+                "required": []
+              },
+              "contact": {
+                "properties": {
+                  "userId": {"type": ["object", "null"]},
+                  "name": {"type": ["string", "null"]},
+                  "email": {"type": ["string", "null"]},
+                  "phones": {"type": "array", "items": {"type": "string"}}
+                },
+                "required": []
+              },
+              "invoiceDisplayValues": {
+                "type": "array",
+                "items": {
+                  "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+                  "required": ["label", "value"]
+                }
+              },
+              "invoiceCCEmails": {"type": "array", "items": {"type": "string"}},
+              "daysToPay": {"type": "number"}
+            },
+            "required": ["name"]
+          },
+          "payees": {
+            "type": "array",
+            "items": {
+              "id": "StudyFundingPayee",
+              "properties": {
+                "institutionId": {"type": "object"},
+                "name": {"type": ["string", "null"]},
+                "address": {
+                  "id": "/Address",
+                  "type": "object",
+                  "properties": {
+                    "streetAddress": {"type": "string"},
+                    "locality": {"type": "string"},
+                    "region": {"type": "string"},
+                    "postalCode": {"type": "string"},
+                    "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                    "countryName": {"type": ["string", "null"]}
+                  },
+                  "required": []
+                },
+                "contact": {
+                  "properties": {
+                    "userId": {"type": ["object", "null"]},
+                    "name": {"type": ["string", "null"]},
+                    "email": {"type": ["string", "null"]},
+                    "phones": {"type": "array", "items": {"type": "string"}}
+                  },
+                  "required": []
+                },
+                "invoiceDisplayValues": {
+                  "type": "array",
+                  "items": {
+                    "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+                    "required": ["label", "value"]
+                  }
+                },
+                "invoiceCCEmails": {"type": "array", "items": {"type": "string"}},
+                "daysToPay": {"type": "number"}
+              },
+              "required": ["name"]
+            }
+          },
+          "rebs": {
+            "type": "array",
+            "items": {
+              "id": "StudyFundingPayee",
+              "properties": {
+                "institutionId": {"type": "object"},
+                "name": {"type": ["string", "null"]},
+                "address": {
+                  "id": "/Address",
+                  "type": "object",
+                  "properties": {
+                    "streetAddress": {"type": "string"},
+                    "locality": {"type": "string"},
+                    "region": {"type": "string"},
+                    "postalCode": {"type": "string"},
+                    "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                    "countryName": {"type": ["string", "null"]}
+                  },
+                  "required": []
+                },
+                "contact": {
+                  "properties": {
+                    "userId": {"type": ["object", "null"]},
+                    "name": {"type": ["string", "null"]},
+                    "email": {"type": ["string", "null"]},
+                    "phones": {"type": "array", "items": {"type": "string"}}
+                  },
+                  "required": []
+                },
+                "invoiceDisplayValues": {
+                  "type": "array",
+                  "items": {
+                    "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+                    "required": ["label", "value"]
+                  }
+                },
+                "invoiceCCEmails": {"type": "array", "items": {"type": "string"}},
+                "daysToPay": {"type": "number"}
+              },
+              "required": ["name"]
+            }
+          },
+          "totalPayment": {"type": "number"},
+          "paymentIds": {"type": "array", "items": {"type": "object"}, "minItems": 1},
+          "startDt": {"type": "date"},
+          "endDt": {"type": "date"},
+          "document": {
+            "id": "/StudyFundingDocument",
+            "properties": {
+              "id": {"type": "object"},
+              "name": {"type": "string"},
+              "originalFilename": {"type": "string"},
+              "link": {"type": "string"},
+              "mimeType": {"type": "string"},
+              "size": {"type": "number"},
+              "documentVersion": {"type": "number"},
+              "uploadDt": {"type": "date"}
+            },
+            "required": ["id", "originalFilename", "uploadDt", "link", "mimeType", "size"]
+          },
+          "createUserId": {"type": "object"},
+          "createDt": {"type": "date"},
+          "updateDt": {"type": "date"}
+        },
+        "required": ["id", "paymentSummaryNumber", "paymentIds", "payee", "createDt", "updateDt"]
+      }
+    }
+  },
+  "required": ["meta", "data"]
+}
+```
+
+
+Gets a filterable list of payment summaries recorded in the system
+
+### HTTP Request
+
+`GET /funding/payment-summary`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSummaryPayeeUpdate - <em>Update Study Funding Payee</em>
+
+
+```shell
+curl -X PUT "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId/payee"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingPaymentSummaryProfileParams",
+    "type": "object",
+    "properties": {"paymentSummaryId": {"type": "string"}},
+    "required": ["paymentSummaryId"]
+  },
+  "body": {
+    "id": "/StudyFundingPayeeBody",
+    "properties": {
+      "institutionId": {"type": "string"},
+      "name": {"type": "string"},
+      "address": {
+        "id": "/PayeeAddressBody",
+        "type": "object",
+        "properties": {
+          "streetAddress": {"type": ["string", "null"], "description": "Street address"},
+          "extendedAddress": {
+            "type": "array",
+            "items": {"type": "string"},
+            "minItems": 0,
+            "maxItems": 5
+          },
+          "postalCode": {"type": ["string", "null"], "maxLength": 10},
+          "locality": {"type": ["string", "null"]},
+          "region": {"type": ["string", "null"]},
+          "countryName": {"type": ["string", "null"]}
+        },
+        "required": []
+      },
+      "contact": {
+        "properties": {
+          "name": {"type": "string"},
+          "phones": {"type": "array", "items": {"type": "string"}},
+          "email": {"type": "string"},
+          "userId": {"type": "string"}
+        },
+        "required": []
+      },
+      "invoiceDisplayValues": {
+        "type": "array",
+        "description": "if omitted, defaults from the linked institution will be used.",
+        "items": {
+          "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+          "required": ["label", "value"]
+        }
+      },
+      "invoiceCCEmails": {
+        "type": "array",
+        "description": "if omitted, defaults from the linked institution will be used.",
+        "items": {"type": "string"}
+      },
+      "daysToPay": {
+        "type": "number",
+        "description": "if omitted, defaults from the linked institution will be used."
+      }
+    },
+    "required": ["name"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Updates the Payee information for one study funding record
+
+### HTTP Request
+
+`PUT /funding/payment-summary/:paymentSummaryId/payee`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSummaryProfile - <em>Get Study Funding Payment Summary Profile</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingPaymentSummaryProfileParams",
+    "type": "object",
+    "properties": {"paymentSummaryId": {"type": "string"}},
+    "required": ["paymentSummaryId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/StudyFundingPaymentSummaryProfileResponse",
+  "type": "object",
+  "properties": {
+    "paymentSummary": {
+      "id": "StudyFundingPaymentSummary",
+      "type": "object",
+      "properties": {
+        "id": {"type": "object"},
+        "paymentSummaryNumber": {"type": "string"},
+        "paymentDt": {"type": "date"},
+        "payee": {
+          "id": "StudyFundingPayee",
+          "properties": {
+            "institutionId": {"type": "object"},
+            "name": {"type": ["string", "null"]},
+            "address": {
+              "id": "/Address",
+              "type": "object",
+              "properties": {
+                "streetAddress": {"type": "string"},
+                "locality": {"type": "string"},
+                "region": {"type": "string"},
+                "postalCode": {"type": "string"},
+                "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                "countryName": {"type": ["string", "null"]}
+              },
+              "required": []
+            },
+            "contact": {
+              "properties": {
+                "userId": {"type": ["object", "null"]},
+                "name": {"type": ["string", "null"]},
+                "email": {"type": ["string", "null"]},
+                "phones": {"type": "array", "items": {"type": "string"}}
+              },
+              "required": []
+            },
+            "invoiceDisplayValues": {
+              "type": "array",
+              "items": {
+                "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+                "required": ["label", "value"]
+              }
+            },
+            "invoiceCCEmails": {"type": "array", "items": {"type": "string"}},
+            "daysToPay": {"type": "number"}
+          },
+          "required": ["name"]
+        },
+        "payees": {
+          "type": "array",
+          "items": {
+            "id": "StudyFundingPayee",
+            "properties": {
+              "institutionId": {"type": "object"},
+              "name": {"type": ["string", "null"]},
+              "address": {
+                "id": "/Address",
+                "type": "object",
+                "properties": {
+                  "streetAddress": {"type": "string"},
+                  "locality": {"type": "string"},
+                  "region": {"type": "string"},
+                  "postalCode": {"type": "string"},
+                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "countryName": {"type": ["string", "null"]}
+                },
+                "required": []
+              },
+              "contact": {
+                "properties": {
+                  "userId": {"type": ["object", "null"]},
+                  "name": {"type": ["string", "null"]},
+                  "email": {"type": ["string", "null"]},
+                  "phones": {"type": "array", "items": {"type": "string"}}
+                },
+                "required": []
+              },
+              "invoiceDisplayValues": {
+                "type": "array",
+                "items": {
+                  "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+                  "required": ["label", "value"]
+                }
+              },
+              "invoiceCCEmails": {"type": "array", "items": {"type": "string"}},
+              "daysToPay": {"type": "number"}
+            },
+            "required": ["name"]
+          }
+        },
+        "rebs": {
+          "type": "array",
+          "items": {
+            "id": "StudyFundingPayee",
+            "properties": {
+              "institutionId": {"type": "object"},
+              "name": {"type": ["string", "null"]},
+              "address": {
+                "id": "/Address",
+                "type": "object",
+                "properties": {
+                  "streetAddress": {"type": "string"},
+                  "locality": {"type": "string"},
+                  "region": {"type": "string"},
+                  "postalCode": {"type": "string"},
+                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "countryName": {"type": ["string", "null"]}
+                },
+                "required": []
+              },
+              "contact": {
+                "properties": {
+                  "userId": {"type": ["object", "null"]},
+                  "name": {"type": ["string", "null"]},
+                  "email": {"type": ["string", "null"]},
+                  "phones": {"type": "array", "items": {"type": "string"}}
+                },
+                "required": []
+              },
+              "invoiceDisplayValues": {
+                "type": "array",
+                "items": {
+                  "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+                  "required": ["label", "value"]
+                }
+              },
+              "invoiceCCEmails": {"type": "array", "items": {"type": "string"}},
+              "daysToPay": {"type": "number"}
+            },
+            "required": ["name"]
+          }
+        },
+        "totalPayment": {"type": "number"},
+        "paymentIds": {"type": "array", "items": {"type": "object"}, "minItems": 1},
+        "startDt": {"type": "date"},
+        "endDt": {"type": "date"},
+        "document": {
+          "id": "/StudyFundingDocument",
+          "properties": {
+            "id": {"type": "object"},
+            "name": {"type": "string"},
+            "originalFilename": {"type": "string"},
+            "link": {"type": "string"},
+            "mimeType": {"type": "string"},
+            "size": {"type": "number"},
+            "documentVersion": {"type": "number"},
+            "uploadDt": {"type": "date"}
+          },
+          "required": ["id", "originalFilename", "uploadDt", "link", "mimeType", "size"]
+        },
+        "createUserId": {"type": "object"},
+        "createDt": {"type": "date"},
+        "updateDt": {"type": "date"}
+      },
+      "required": ["id", "paymentSummaryNumber", "paymentIds", "payee", "createDt", "updateDt"]
+    },
+    "payments": {
+      "type": "array",
+      "items": {
+        "id": "StudyFundingPayment",
+        "type": "object",
+        "properties": {
+          "id": {"type": "object"},
+          "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+          "paymentNumber": {"type": "string"},
+          "paymentReference": {"type": "string"},
+          "paymentSummaryId": {"type": "object"},
+          "paymentSummaryNumber": {"type": "string"},
+          "sentInSummary": {"type": "boolean"},
+          "quickBooksId": {"type": "string"},
+          "paymentDt": {"type": "date"},
+          "isVoid": {"type": "boolean"},
+          "totalPayment": {"type": "number"},
+          "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
+          "createUserId": {"type": ["object", "null"]},
+          "createDt": {"type": "date"},
+          "updateDt": {"type": "date"},
+          "payee": {
+            "id": "StudyFundingPaymentPayee",
+            "properties": {
+              "institutionId": {"type": "object"},
+              "name": {"type": ["string", "null"]},
+              "address": {
+                "id": "/Address",
+                "type": "object",
+                "properties": {
+                  "streetAddress": {"type": "string"},
+                  "locality": {"type": "string"},
+                  "region": {"type": "string"},
+                  "postalCode": {"type": "string"},
+                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "countryName": {"type": ["string", "null"]}
+                },
+                "required": []
+              },
+              "contact": {
+                "properties": {
+                  "userId": {"type": ["object", "null"]},
+                  "name": {"type": ["string", "null"]},
+                  "email": {"type": ["string", "null"]},
+                  "phones": {"type": "array", "items": {"type": "string"}}
+                },
+                "required": []
+              },
+              "invoiceDisplayValues": {
+                "type": "array",
+                "items": {
+                  "properties": {"label": {"type": "string"}, "value": {"type": "string"}},
+                  "required": ["label", "value"]
+                }
+              },
+              "invoiceCCEmails": {"type": "array", "items": {"type": "string"}},
+              "daysToPay": {"type": "number"}
+            },
+            "required": ["name"]
+          },
+          "invoicePayments": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "studyId": {"type": "object"},
+                "studyFundingId": {"type": "object"},
+                "invoiceId": {"type": "object"},
+                "invoiceNumber": {"type": "string"},
+                "invoiceShortNumber": {"type": "number"},
+                "condition": {"type": "string"},
+                "conditionLabel": {"type": "string"},
+                "description": {"type": "string"},
+                "projectIdNumber": {"type": "number"},
+                "fundingNumber": {"type": "string"},
+                "paymentAmount": {"type": "number"},
+                "total": {"type": "number"},
+                "totalPaid": {"type": "number"}
+              },
+              "required": [
+                "studyId",
+                "studyFundingId",
+                "invoiceId",
+                "invoiceNumber",
+                "invoiceShortNumber",
+                "condition",
+                "conditionLabel",
+                "description",
+                "projectIdNumber",
+                "fundingNumber",
+                "paymentAmount"
+              ]
+            }
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "actionDt": {"type": "date"},
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "void",
+                    "payeeUpdate",
+                    "create",
+                    "feesOverride",
+                    "note",
+                    "updateTotal",
+                    "updateValue",
+                    "sendInitial",
+                    "sendReminder",
+                    "sendUpdate",
+                    "document_create",
+                    "document_update",
+                    "institution_add",
+                    "institution_update",
+                    "institution_link",
+                    "payment_reb_create",
+                    "payment_reb_update",
+                    "payment_reb_delete",
+                    "payment_institution_create",
+                    "payment_institution_update",
+                    "payment_institution_delete",
+                    "payment_sponsor_create",
+                    "payment_sponsor_update",
+                    "payment_sponsor_delete"
+                  ]
+                },
+                "reason": {"type": "string"},
+                "userId": {"type": "object"}
+              },
+              "required": ["actionDt", "action", "reason"]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "paymentType",
+          "paymentNumber",
+          "totalPayment",
+          "isVoid",
+          "createDt",
+          "paymentReason",
+          "updateDt",
+          "history",
+          "invoicePayments"
+        ]
+      }
+    }
+  },
+  "required": ["paymentSummary", "payments"]
+}
+```
+
+
+Gets the details for one payment summary
+
+### HTTP Request
+
+`GET /funding/payment-summary/:paymentSummaryId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSummarySavePaymentDate - <em>Study Funding Payment Summary Save Payment Date</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId/save-payment-date"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingPaymentSummaryParams",
+    "type": "object",
+    "properties": {"paymentSummaryId": {"type": ["string", "null"]}},
+    "required": ["paymentSummaryId"]
+  },
+  "body": {
+    "id": "/StudyFundingPaymentSummarySavePaymentDateBody",
+    "type": "object",
+    "properties": {"paymentDt": {"type": "string", "format": "date-time"}},
+    "required": []
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Marks all payments in a summary as sent
+
+### HTTP Request
+
+`POST /funding/payment-summary/:paymentSummaryId/save-payment-date`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
 ## StudyFundingPayments - <em>Get Study Funding Payments</em>
 
 
@@ -2161,6 +3141,9 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
           "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
           "paymentNumber": {"type": "string"},
           "paymentReference": {"type": "string"},
+          "paymentSummaryId": {"type": "object"},
+          "paymentSummaryNumber": {"type": "string"},
+          "sentInSummary": {"type": "boolean"},
           "quickBooksId": {"type": "string"},
           "paymentDt": {"type": "date"},
           "isVoid": {"type": "boolean"},
@@ -2172,7 +3155,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
           "payee": {
             "id": "StudyFundingPaymentPayee",
             "properties": {
-              "id": {"type": "object"},
+              "institutionId": {"type": "object"},
               "name": {"type": ["string", "null"]},
               "address": {
                 "id": "/Address",
@@ -2366,7 +3349,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
         "payee": {
           "id": "StudyFundingPayee",
           "properties": {
-            "id": {"type": "object"},
+            "institutionId": {"type": "object"},
             "name": {"type": ["string", "null"]},
             "address": {
               "id": "/Address",
@@ -2419,6 +3402,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                 "link": {"type": "string"},
                 "mimeType": {"type": "string"},
                 "size": {"type": "number"},
+                "documentVersion": {"type": "number"},
                 "uploadDt": {"type": "date"}
               },
               "required": ["id", "originalFilename", "uploadDt", "link", "mimeType", "size"]

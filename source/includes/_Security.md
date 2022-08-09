@@ -57,6 +57,44 @@ Tests a users credentials, and if successful returns a token to access the syste
  
 N/A
 
+## Logout - <em>Logout</em>
+
+
+```shell
+curl -X PUT "https://ctoregistry.com/api/v1/security/logout"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Sets a users token as logged out to prevent access immediately
+
+### HTTP Request
+
+`PUT /security/logout`
+
+
+
+### Authorization
+ 
+N/A
+
 ## PrivilegeToken - <em>Get Privilege Token</em>
 
 

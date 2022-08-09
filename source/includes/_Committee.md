@@ -307,9 +307,11 @@ curl "https://ctoregistry.com/api/v1/dictionary/committee"
           "name": {"type": "string"},
           "shortName": {"type": "string"},
           "streamName": {"type": "string"},
+          "parentCommitteeId": {"type": "object"},
+          "institutionId": {"type": "object"},
           "code": {"type": "string"}
         },
-        "required": ["id", "name", "streamName", "code"]
+        "required": ["id", "name", "streamName", "code", "institutionId"]
       }
     }
   }
