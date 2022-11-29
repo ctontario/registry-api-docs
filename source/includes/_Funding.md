@@ -1669,6 +1669,10 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
       "status": {"type": ["string", "array"]},
       "csv": {"type": "boolean"},
       "payeeIds": {"type": ["string", "array"], "description": "an array of payee institution IDs"},
+      "excludePayeeIds": {
+        "type": ["string", "array"],
+        "description": "an array of payee institution IDs to exclude from the list"
+      },
       "payeeLinked": {
         "type": "string",
         "enum": ["notLinked", "linked", "all"],
@@ -2068,7 +2072,7 @@ curl -X POST "https://ctoregistry.com/api/v1/funding/payments/:paymentId?"
           "contact": {
             "properties": {
               "name": {"type": "string"},
-              "phone": {"type": "string"},
+              "phone": {"type": ["string", "null"]},
               "email": {"type": "string"}
             },
             "required": []
@@ -2305,6 +2309,61 @@ Deletes one payment summary
 system | admin | N/A|N/A
 system | funding | N/A|N/A
 
+## StudyFundingPaymentSummaryDeleteHistory - <em>Study Funding Delete Payment Summary History</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId/history/:historyId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingPaymentSummaryDeleteHistoryParams",
+    "properties": {"paymentSummaryId": {"type": "string"}, "historyId": {"type": "string"}},
+    "required": ["paymentSummaryId", "historyId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+removes a note from the payment summary history.
+
+### HTTP Request
+
+`DELETE /funding/payment-summary/:paymentSummaryId/history/:historyId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
 ## StudyFundingPaymentSummaryDocumentDownload - <em>Download Study Funding Payment Summary Document</em>
 
 
@@ -2375,7 +2434,10 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary"
       "search": {"type": "string"},
       "status": {"type": "string"},
       "csv": {"type": "boolean"},
-      "payeeIds": {"type": ["string", "array"], "description": "an array of payee institution IDs"}
+      "payeeIds": {
+        "type": ["string", "array"],
+        "description": "an array of payee institution IDs to include in the list"
+      }
     }
   }
 }
@@ -2685,6 +2747,118 @@ Updates the Payee information for one study funding record
 system | admin | N/A|N/A
 system | funding | N/A|N/A
 
+## StudyFundingPaymentSummaryPaymentAdd - <em>Add Study Funding Payment Summary Payment</em>
+
+
+```shell
+curl -X PUT "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId/payments/:paymentId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingPaymentSummaryProfileParams",
+    "type": "object",
+    "properties": {"paymentSummaryId": {"type": "string"}, "paymentId": {"type": "string"}},
+    "required": ["paymentSummaryId", "paymentId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Adds one payment to a payment summary
+
+### HTTP Request
+
+`PUT /funding/payment-summary/:paymentSummaryId/payments/:paymentId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSummaryPaymentDelete - <em>Delete Study Funding Payment Summary Payment</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId/payments/:paymentId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/StudyFundingPaymentSummaryProfileParams",
+    "type": "object",
+    "properties": {"paymentSummaryId": {"type": "string"}, "paymentId": {"type": "string"}},
+    "required": ["paymentSummaryId", "paymentId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Deletes one payment from a payment summary
+
+### HTTP Request
+
+`DELETE /funding/payment-summary/:paymentSummaryId/payments/:paymentId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
 ## StudyFundingPaymentSummaryProfile - <em>Get Study Funding Payment Summary Profile</em>
 
 
@@ -2869,6 +3043,32 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
       },
       "required": ["id", "paymentSummaryNumber", "paymentIds", "payee", "createDt", "updateDt"]
     },
+    "history": {
+      "type": "array",
+      "items": {
+        "id": "StudyFundingPaymentSummaryHistory",
+        "properties": {
+          "id": {"type": "object"},
+          "actionDt": {"type": "date"},
+          "action": {
+            "type": "string",
+            "enum": [
+              "payeeUpdate",
+              "create",
+              "note",
+              "document_create",
+              "document_update",
+              "payment_delete",
+              "payment_add",
+              "payment_date_update"
+            ]
+          },
+          "reason": {"type": "string"},
+          "userId": {"type": "object"}
+        },
+        "required": ["id", "actionDt", "action", "reason"]
+      }
+    },
     "payments": {
       "type": "array",
       "items": {
@@ -3018,7 +3218,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
       }
     }
   },
-  "required": ["paymentSummary", "payments"]
+  "required": ["paymentSummary", "history", "payments"]
 }
 ```
 
@@ -3028,6 +3228,71 @@ Gets the details for one payment summary
 ### HTTP Request
 
 `GET /funding/payment-summary/:paymentSummaryId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSummarySaveHistory - <em>Study Funding Add Payment Summary History</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId/history"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingPaymentSummarySaveHistoryParams",
+    "properties": {"paymentSummaryId": {"type": "string"}},
+    "required": ["paymentSummaryId"]
+  },
+  "body": {
+    "id": "StudyFundingPaymentSummarySaveHistoryBody",
+    "type": "object",
+    "properties": {
+      "note": {"type": "string"},
+      "historyId": {"type": "string"},
+      "date": {"type": "string", "format": "date-time"}
+    },
+    "required": ["note"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+adds a note to the payment summary history. Date can be specified or it will default to today
+
+### HTTP Request
+
+`POST /funding/payment-summary/:paymentSummaryId/history`
 
 
 

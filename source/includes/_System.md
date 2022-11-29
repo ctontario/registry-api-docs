@@ -728,9 +728,23 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
               "required": ["code", "label"]
             }
           }
+        },
+        "paymentSummaryHistoryActions": {
+          "id": "StudyFundingPaymentSummaryHistoryActionDictionary",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {"code": {"type": "string"}, "label": {"type": "string"}},
+              "required": ["code", "label"]
+            }
+          }
         }
       },
-      "required": ["paymentReasons", "paymentTypes", "invoiceHistoryActions"]
+      "required": [
+        "paymentReasons",
+        "paymentTypes",
+        "invoiceHistoryActions",
+        "paymentSummaryHistoryActions"
+      ]
     }
   },
   "required": [
@@ -994,9 +1008,17 @@ curl "https://ctoregistry.com/api/v1/system/version"
         "frontendUrl": {"type": "string"},
         "database": {"type": "string"},
         "confidentiality": {"type": "string"},
-        "email": {"type": "boolean"}
+        "email": {"type": "boolean"},
+        "maintenanceMode": {"type": "boolean"}
       },
-      "required": ["environment", "frontendUrl", "database", "confidentiality", "email"]
+      "required": [
+        "environment",
+        "frontendUrl",
+        "database",
+        "confidentiality",
+        "email",
+        "maintenanceMode"
+      ]
     }
   }
 }

@@ -1987,6 +1987,199 @@ self | N/A | N/A|N/A
 system | * | N/A|N/A
 institution | admin | user|N/A
 
+## UserSavedSearchCreation - <em>Add User Saved Search</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/user/:userId/searches"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/UserParams",
+    "type": "object",
+    "properties": {"userId": {"type": "string", "required": true}},
+    "required": ["userId"]
+  },
+  "body": {
+    "id": "/UserSavedSearchCreationBody",
+    "type": "object",
+    "properties": {"searchName": {"type": "string"}, "searchUrl": {"type": "string"}},
+    "required": ["searchName", "searchUrl"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Adds a saved search to a user account
+
+### HTTP Request
+
+`POST /user/:userId/searches`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+self | N/A | N/A|N/A
+system | admin | N/A|N/A
+system | support | N/A|N/A
+institution | admin | user|N/A
+
+## UserSavedSearchDelete - <em>Deletes one User Saved Search</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/user/:userId/searches/:searchId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/UserSearchDeleteParams",
+    "type": "object",
+    "properties": {
+      "userId": {"type": "string", "required": true},
+      "searchId": {"type": "string", "required": true}
+    },
+    "required": ["userId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Deletes one user saved search
+
+### HTTP Request
+
+`DELETE /user/:userId/searches/:searchId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+self | N/A | N/A|N/A
+system | admin | N/A|N/A
+system | support | N/A|N/A
+institution | admin | user|N/A
+
+## UserSavedSearches - <em>Get User Saved Searches</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/user/:userId/searches"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/UserParams",
+    "type": "object",
+    "properties": {"userId": {"type": "string", "required": true}},
+    "required": ["userId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/UserSavedSearchesResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "id": "/UserSavedSearch",
+        "properties": {
+          "id": {"type": ["object", "null"]},
+          "searchName": {"type": "string"},
+          "searchUrl": {"type": "string"},
+          "createDt": {"type": "date"},
+          "updateDt": {"type": "date"}
+        },
+        "required": ["id", "searchName", "searchUrl", "createDt", "updateDt"]
+      }
+    }
+  }
+}
+```
+
+
+Gets all the saved searches for a user account
+
+### HTTP Request
+
+`GET /user/:userId/searches`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+self | N/A | N/A|N/A
+system | admin | N/A|N/A
+system | support | N/A|N/A
+institution | admin | user|N/A
+
 ## UserSearch - <em>Search Users</em>
 
 
