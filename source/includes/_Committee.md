@@ -555,9 +555,13 @@ curl -X POST "https://ctoregistry.com/api/v1/committee/:committeeId/members/add"
       "status": {
         "type": "string",
         "description": "The status of the member",
-        "enum": ["pending", "active", "suspended", "ended"]
+        "enum": ["active", "ended"]
       },
-      "joinDt": {"type": "string", "description": "The date the member joined the committee"}
+      "joinDt": {"type": "string", "description": "The date the member joined the committee"},
+      "endDt": {
+        "type": "string",
+        "description": "The date the membership ended with the committee, only used if status is set to ended."
+      }
     },
     "required": ["userId", "role", "status"]
   }
@@ -633,9 +637,13 @@ curl -X POST "https://ctoregistry.com/api/v1/committee/:committeeId/members/edit
       "status": {
         "type": "string",
         "description": "The status of the member",
-        "enum": ["pending", "active", "suspended", "ended"]
+        "enum": ["active", "ended"]
       },
       "joinDt": {"type": "string", "description": "The date the member joined the committee"},
+      "endDt": {
+        "type": "string",
+        "description": "The date the membership ended with the committee, only used if status is set to ended."
+      },
       "memberId": {
         "type": "string",
         "description": "The userId of the user's account to add as a committee member"
@@ -720,6 +728,7 @@ curl "https://ctoregistry.com/api/v1/committee/:committeeId/members"
           "role": {"type": "string"},
           "status": {"type": "string"},
           "createDt": {"type": "date"},
+          "joinDt": {"type": "date"},
           "endDt": {"type": "date"},
           "user": {
             "id": "/UserShortProfile",
@@ -744,7 +753,7 @@ curl "https://ctoregistry.com/api/v1/committee/:committeeId/members"
             "required": ["id", "username", "contact", "institutionIds"]
           }
         },
-        "required": ["id", "role", "status", "createDt", "user"]
+        "required": ["id", "role", "status", "createDt", "joinDt", "user"]
       }
     }
   }
@@ -767,7 +776,7 @@ gets all the members of a committee
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | support | N/A|N/A
-committee | member | committee|N/A
+committee | * | committee|N/A
 
 ## CommitteeProfile - <em>Get Committee</em>
 
@@ -927,7 +936,7 @@ curl "https://ctoregistry.com/api/v1/dictionary/committee-search/:searchString?"
 ```
 
 
-Searches for committees whose name matches the search string.
+Searches for committees whose name or code matches the search string.
 
 ### HTTP Request
 

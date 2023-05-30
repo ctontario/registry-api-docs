@@ -252,7 +252,17 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
         "properties": {
           "formCode": {"type": "string"},
           "formName": {"type": "string"},
-          "reviewReferences": {"type": "array", "items": {"type": "string"}},
+          "reviewReferences": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "reviewReference": {"type": "string"},
+                "reviewStatus": {"type": "string"}
+              },
+              "required": ["reviewReference"]
+            }
+          },
           "parentFormIdNumber": {"type": "number"},
           "formIdNumber": {"type": "number"},
           "initialSubmitDt": {"type": "date"},

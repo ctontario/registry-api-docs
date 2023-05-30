@@ -2,6 +2,113 @@
 # Metrics
 
 
+## CommitteeReviewReport - <em>Review Report for one Committee</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/metrics/committee/:committeeId/review-report"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "query": {
+    "id": "/MetricsCommitteeReviewQuery",
+    "type": "object",
+    "properties": {
+      "csv": {
+        "type": "boolean",
+        "description": "Return the report as CSV content instead of the default JSON"
+      },
+      "startDt": {"type": "string", "format": "date-time"},
+      "endDt": {"type": "string", "format": "date-time"},
+      "delegatedOnly": {"type": "boolean"}
+    },
+    "required": ["startDt", "endDt"]
+  },
+  "params": {
+    "id": "/MetricsCommitteeReviewParams",
+    "properties": {
+      "committeeId": {"type": "string", "description": "The committee ID to get the report for"},
+      "required": ["committeeId"]
+    }
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/MetricsCommitteeReviewResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "/MetricsCommitteeReviewData",
+        "type": "object",
+        "properties": {
+          "committeeName": {"type": "string"},
+          "committeeId": {"type": "object"},
+          "applicationType": {"type": "string"},
+          "studyId": {"type": "object"},
+          "projectIdNumber": {"type": "number"},
+          "shortTitle": {"type": "string"},
+          "studyIdentifier": {"type": ["string", "null"]},
+          "centre": {"type": "string"},
+          "reviewReference": {"type": "string"},
+          "assignedReviewer": {"type": "string"},
+          "reviewStatus": {"type": "string"},
+          "approvalStatus": {"type": "string"},
+          "approvalStatusDt": {"type": "date"},
+          "delegatedOnly": {"type": "boolean"},
+          "title": {"type": "string"}
+        },
+        "required": [
+          "committeeName",
+          "committeeId",
+          "applicationType",
+          "studyId",
+          "projectIdNumber",
+          "shortTitle",
+          "centre",
+          "reviewReference",
+          "reviewStatus",
+          "approvalStatus",
+          "approvalStatusDt",
+          "delegatedOnly",
+          "title"
+        ]
+      }
+    }
+  },
+  "required": ["data"]
+}
+```
+
+
+Gets a report of all studies that had a specified review action in the time period for the specified committee
+
+### HTTP Request
+
+`GET /metrics/committee/:committeeId/review-report`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
+committee | admin | committee|N/A
+
 ## FundingMasterReport - <em>Funding Master Report</em>
 
 

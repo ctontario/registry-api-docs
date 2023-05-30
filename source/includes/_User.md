@@ -934,7 +934,7 @@ Gets the full information about a users institution for use in the edit institut
 self | N/A | N/A|N/A
 system | * | N/A|N/A
 institution | admin | user|N/A
-committee | member | user|The user has a role on a study, and the study is assigned to the privilege target REB.
+committee | * | user|The user has a role on a study, and the study is assigned to the privilege target REB.
 
 ## UserInstitutionRoleCreation - <em>Add a role to the owner of current account</em>
 
@@ -1334,7 +1334,7 @@ Returns the list of all the users in the system
 system | * | N/A|N/A
 institution | admin | N/A|User is a member at, or their request involves the target institution of the privilege.
 institution | member | N/A|User is a member at, or their request involves the target institution of the privilege.
-committee | member | N/A|The user has a role on a study, and the study is assigned to the privilege target REB.
+committee | * | N/A|The user has a role on a study, and the study is assigned to the privilege target REB.
 
 ## UserPasswordUpdate - <em>Update Password</em>
 

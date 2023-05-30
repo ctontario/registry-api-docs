@@ -761,7 +761,6 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId/issues"
           "messageId": {"type": ["string", "null"]},
           "issue": {"type": ["string"]},
           "isResolved": {"type": "boolean"},
-          "isResolvedPreviously": {"type": "boolean"},
           "rawData": {"type": ["object", "string"]},
           "data": {
             "properties": {
@@ -773,7 +772,7 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId/issues"
             }
           }
         },
-        "required": ["id", "data", "taskLogId", "issueType", "isResolved", "isResolvedPreviously"]
+        "required": ["id", "data", "taskLogId", "issueType", "isResolved"]
       }
     }
   },
@@ -825,10 +824,10 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs"
             "type": "object",
             "properties": {
               "total": {"type": "integer"},
-              "resolvedPreviously": {"type": "integer"},
+              "new": {"type": "integer"},
               "resolved": {"type": "integer"}
             },
-            "required": ["total", "resolvedPreviously", "resolved"]
+            "required": ["total", "new", "resolved"]
           },
           "results": {
             "type": "object",
@@ -981,10 +980,10 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/list"
             "type": "object",
             "properties": {
               "total": {"type": "integer"},
-              "resolvedPreviously": {"type": "integer"},
+              "new": {"type": "integer"},
               "resolved": {"type": "integer"}
             },
-            "required": ["total", "resolvedPreviously", "resolved"]
+            "required": ["total", "new", "resolved"]
           },
           "results": {
             "type": "object",
@@ -1058,10 +1057,10 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId"
           "type": "object",
           "properties": {
             "total": {"type": "integer"},
-            "resolvedPreviously": {"type": "integer"},
+            "new": {"type": "integer"},
             "resolved": {"type": "integer"}
           },
-          "required": ["total", "resolvedPreviously", "resolved"]
+          "required": ["total", "new", "resolved"]
         },
         "results": {
           "type": "object",
