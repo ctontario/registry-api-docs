@@ -229,6 +229,12 @@ curl -X POST "https://ctoregistry.com/api/v1/admin/moderation/user/institution"
 
 ```json
 {
+  "query": {
+    "id": "/UserInstitutionModerationBody",
+    "type": "object",
+    "properties": {"suppressEmail": {"type": "boolean"}},
+    "required": []
+  },
   "body": {
     "id": "/UserInstitutionModerationBody",
     "type": "object",
@@ -726,7 +732,8 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId/issues"
       "order": {"type": "string"},
       "search": {"type": "string"},
       "status": {"type": ["string", "array"]},
-      "csv": {"type": "boolean"}
+      "csv": {"type": "boolean"},
+      "messageType": {"type": "string", "description": "searches the message type"}
     }
   }
 }

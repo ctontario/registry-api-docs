@@ -32,9 +32,9 @@ curl "https://ctoregistry.com/api/v1/metrics/committee/:committeeId/review-repor
   "params": {
     "id": "/MetricsCommitteeReviewParams",
     "properties": {
-      "committeeId": {"type": "string", "description": "The committee ID to get the report for"},
-      "required": ["committeeId"]
-    }
+      "committeeId": {"type": "string", "description": "The committee ID to get the report for"}
+    },
+    "required": ["committeeId"]
   }
 }
 ```

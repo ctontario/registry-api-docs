@@ -1644,6 +1644,61 @@ Deletes a payment.  Payments cannot be deleted if REB payouts have already happe
 system | admin | N/A|N/A
 system | funding | N/A|N/A
 
+## StudyFundingPaymentDeleteHistory - <em>Study Funding Delete Payment History</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/funding/payments/:paymentId/history/:historyId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingPaymentDeleteHistoryParams",
+    "properties": {"paymentId": {"type": "string"}, "historyId": {"type": "string"}},
+    "required": ["paymentId", "historyId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+removes a note from the payment history.
+
+### HTTP Request
+
+`DELETE /funding/payments/:paymentId/history/:historyId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
 ## StudyFundingPaymentList - <em>Get Study Funding Payments List</em>
 
 
@@ -1712,6 +1767,8 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
         "properties": {
           "id": {"type": "object"},
           "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+          "institutionId": {"type": "object"},
+          "institutionName": {"type": "string"},
           "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
           "paymentNumber": {"type": "string"},
           "paymentReference": {"type": "string"},
@@ -1720,6 +1777,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
           "quickBooksId": {"type": "string"},
           "paymentDt": {"type": "date"},
           "isVoid": {"type": "boolean"},
+          "isDeleteError": {"type": "boolean"},
           "totalPayment": {"type": "number"},
           "createDt": {"type": "date"},
           "updateDt": {"type": "date"},
@@ -1798,6 +1856,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
         "required": [
           "id",
           "paymentType",
+          "institutionName",
           "paymentReason",
           "paymentNumber",
           "totalPayment",
@@ -1865,6 +1924,8 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
       "properties": {
         "id": {"type": "object"},
         "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+        "institutionId": {"type": "object"},
+        "institutionName": {"type": "string"},
         "paymentNumber": {"type": "string"},
         "paymentReference": {"type": "string"},
         "paymentSummaryId": {"type": "object"},
@@ -1873,6 +1934,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
         "quickBooksId": {"type": "string"},
         "paymentDt": {"type": "date"},
         "isVoid": {"type": "boolean"},
+        "isDeleteError": {"type": "boolean"},
         "totalPayment": {"type": "number"},
         "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
         "createUserId": {"type": ["object", "null"]},
@@ -1954,46 +2016,53 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
           "type": "array",
           "items": {
             "properties": {
+              "id": {"type": "object"},
               "actionDt": {"type": "date"},
               "action": {
                 "type": "string",
                 "enum": [
                   "void",
-                  "payeeUpdate",
-                  "create",
-                  "feesOverride",
+                  "payee_update",
+                  "fees_override",
                   "note",
-                  "updateTotal",
-                  "updateValue",
-                  "sendInitial",
-                  "sendReminder",
-                  "sendUpdate",
                   "document_create",
                   "document_update",
+                  "invoice_create",
+                  "invoice_update_total",
+                  "invoice_update_value",
+                  "invoice_send_initial",
+                  "invoice_send_reminder",
+                  "invoice_send_update",
                   "institution_add",
                   "institution_update",
                   "institution_link",
+                  "payment_delete",
+                  "payment_add",
+                  "payment_date_update",
                   "payment_reb_create",
                   "payment_reb_update",
                   "payment_reb_delete",
                   "payment_institution_create",
                   "payment_institution_update",
                   "payment_institution_delete",
+                  "payment_institution_delete_error",
                   "payment_sponsor_create",
                   "payment_sponsor_update",
-                  "payment_sponsor_delete"
+                  "payment_sponsor_delete",
+                  "summary_create"
                 ]
               },
               "reason": {"type": "string"},
               "userId": {"type": "object"}
             },
-            "required": ["actionDt", "action", "reason"]
+            "required": ["id", "actionDt", "action", "reason"]
           }
         }
       },
       "required": [
         "id",
         "paymentType",
+        "institutionName",
         "paymentNumber",
         "totalPayment",
         "isVoid",
@@ -2123,6 +2192,71 @@ Records or updates a payment.  To update a payment, pass the paymentId as part o
 ### HTTP Request
 
 `POST /funding/payments/:paymentId?`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingPaymentSaveHistory - <em>Study Funding Add Payment History</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/funding/payments/:paymentId/history"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingPaymentSummarySaveHistoryParams",
+    "properties": {"paymentSummaryId": {"type": "string"}},
+    "required": ["paymentSummaryId"]
+  },
+  "body": {
+    "id": "StudyFundingPaymentSummarySaveHistoryBody",
+    "type": "object",
+    "properties": {
+      "note": {"type": "string"},
+      "historyId": {"type": "string"},
+      "date": {"type": "string", "format": "date-time"}
+    },
+    "required": ["note"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+adds a note to the payment summary history. Date can be specified or it will default to today
+
+### HTTP Request
+
+`POST /funding/payments/:paymentId/history`
 
 
 
@@ -2592,6 +2726,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary"
               "required": ["name"]
             }
           },
+          "isDeleteError": {"type": "boolean"},
           "totalPayment": {"type": "number"},
           "paymentIds": {"type": "array", "items": {"type": "object"}, "minItems": 1},
           "startDt": {"type": "date"},
@@ -3019,6 +3154,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
             "required": ["name"]
           }
         },
+        "isDeleteError": {"type": "boolean"},
         "totalPayment": {"type": "number"},
         "paymentIds": {"type": "array", "items": {"type": "object"}, "minItems": 1},
         "startDt": {"type": "date"},
@@ -3053,14 +3189,35 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
           "action": {
             "type": "string",
             "enum": [
-              "payeeUpdate",
-              "create",
+              "void",
+              "payee_update",
+              "fees_override",
               "note",
               "document_create",
               "document_update",
+              "invoice_create",
+              "invoice_update_total",
+              "invoice_update_value",
+              "invoice_send_initial",
+              "invoice_send_reminder",
+              "invoice_send_update",
+              "institution_add",
+              "institution_update",
+              "institution_link",
               "payment_delete",
               "payment_add",
-              "payment_date_update"
+              "payment_date_update",
+              "payment_reb_create",
+              "payment_reb_update",
+              "payment_reb_delete",
+              "payment_institution_create",
+              "payment_institution_update",
+              "payment_institution_delete",
+              "payment_institution_delete_error",
+              "payment_sponsor_create",
+              "payment_sponsor_update",
+              "payment_sponsor_delete",
+              "summary_create"
             ]
           },
           "reason": {"type": "string"},
@@ -3077,6 +3234,8 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
         "properties": {
           "id": {"type": "object"},
           "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+          "institutionId": {"type": "object"},
+          "institutionName": {"type": "string"},
           "paymentNumber": {"type": "string"},
           "paymentReference": {"type": "string"},
           "paymentSummaryId": {"type": "object"},
@@ -3085,6 +3244,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
           "quickBooksId": {"type": "string"},
           "paymentDt": {"type": "date"},
           "isVoid": {"type": "boolean"},
+          "isDeleteError": {"type": "boolean"},
           "totalPayment": {"type": "number"},
           "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
           "createUserId": {"type": ["object", "null"]},
@@ -3166,46 +3326,53 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
             "type": "array",
             "items": {
               "properties": {
+                "id": {"type": "object"},
                 "actionDt": {"type": "date"},
                 "action": {
                   "type": "string",
                   "enum": [
                     "void",
-                    "payeeUpdate",
-                    "create",
-                    "feesOverride",
+                    "payee_update",
+                    "fees_override",
                     "note",
-                    "updateTotal",
-                    "updateValue",
-                    "sendInitial",
-                    "sendReminder",
-                    "sendUpdate",
                     "document_create",
                     "document_update",
+                    "invoice_create",
+                    "invoice_update_total",
+                    "invoice_update_value",
+                    "invoice_send_initial",
+                    "invoice_send_reminder",
+                    "invoice_send_update",
                     "institution_add",
                     "institution_update",
                     "institution_link",
+                    "payment_delete",
+                    "payment_add",
+                    "payment_date_update",
                     "payment_reb_create",
                     "payment_reb_update",
                     "payment_reb_delete",
                     "payment_institution_create",
                     "payment_institution_update",
                     "payment_institution_delete",
+                    "payment_institution_delete_error",
                     "payment_sponsor_create",
                     "payment_sponsor_update",
-                    "payment_sponsor_delete"
+                    "payment_sponsor_delete",
+                    "summary_create"
                   ]
                 },
                 "reason": {"type": "string"},
                 "userId": {"type": "object"}
               },
-              "required": ["actionDt", "action", "reason"]
+              "required": ["id", "actionDt", "action", "reason"]
             }
           }
         },
         "required": [
           "id",
           "paymentType",
+          "institutionName",
           "paymentNumber",
           "totalPayment",
           "isVoid",
@@ -3404,6 +3571,8 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
         "properties": {
           "id": {"type": "object"},
           "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+          "institutionId": {"type": "object"},
+          "institutionName": {"type": "string"},
           "paymentNumber": {"type": "string"},
           "paymentReference": {"type": "string"},
           "paymentSummaryId": {"type": "object"},
@@ -3412,6 +3581,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
           "quickBooksId": {"type": "string"},
           "paymentDt": {"type": "date"},
           "isVoid": {"type": "boolean"},
+          "isDeleteError": {"type": "boolean"},
           "totalPayment": {"type": "number"},
           "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
           "createUserId": {"type": ["object", "null"]},
@@ -3493,46 +3663,53 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
             "type": "array",
             "items": {
               "properties": {
+                "id": {"type": "object"},
                 "actionDt": {"type": "date"},
                 "action": {
                   "type": "string",
                   "enum": [
                     "void",
-                    "payeeUpdate",
-                    "create",
-                    "feesOverride",
+                    "payee_update",
+                    "fees_override",
                     "note",
-                    "updateTotal",
-                    "updateValue",
-                    "sendInitial",
-                    "sendReminder",
-                    "sendUpdate",
                     "document_create",
                     "document_update",
+                    "invoice_create",
+                    "invoice_update_total",
+                    "invoice_update_value",
+                    "invoice_send_initial",
+                    "invoice_send_reminder",
+                    "invoice_send_update",
                     "institution_add",
                     "institution_update",
                     "institution_link",
+                    "payment_delete",
+                    "payment_add",
+                    "payment_date_update",
                     "payment_reb_create",
                     "payment_reb_update",
                     "payment_reb_delete",
                     "payment_institution_create",
                     "payment_institution_update",
                     "payment_institution_delete",
+                    "payment_institution_delete_error",
                     "payment_sponsor_create",
                     "payment_sponsor_update",
-                    "payment_sponsor_delete"
+                    "payment_sponsor_delete",
+                    "summary_create"
                   ]
                 },
                 "reason": {"type": "string"},
                 "userId": {"type": "object"}
               },
-              "required": ["actionDt", "action", "reason"]
+              "required": ["id", "actionDt", "action", "reason"]
             }
           }
         },
         "required": [
           "id",
           "paymentType",
+          "institutionName",
           "paymentNumber",
           "totalPayment",
           "isVoid",
@@ -3766,29 +3943,34 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                           "type": "string",
                           "enum": [
                             "void",
-                            "payeeUpdate",
-                            "create",
-                            "feesOverride",
+                            "payee_update",
+                            "fees_override",
                             "note",
-                            "updateTotal",
-                            "updateValue",
-                            "sendInitial",
-                            "sendReminder",
-                            "sendUpdate",
                             "document_create",
                             "document_update",
+                            "invoice_create",
+                            "invoice_update_total",
+                            "invoice_update_value",
+                            "invoice_send_initial",
+                            "invoice_send_reminder",
+                            "invoice_send_update",
                             "institution_add",
                             "institution_update",
                             "institution_link",
+                            "payment_delete",
+                            "payment_add",
+                            "payment_date_update",
                             "payment_reb_create",
                             "payment_reb_update",
                             "payment_reb_delete",
                             "payment_institution_create",
                             "payment_institution_update",
                             "payment_institution_delete",
+                            "payment_institution_delete_error",
                             "payment_sponsor_create",
                             "payment_sponsor_update",
-                            "payment_sponsor_delete"
+                            "payment_sponsor_delete",
+                            "summary_create"
                           ]
                         },
                         "reason": {"type": "string"},

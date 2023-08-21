@@ -1,5 +1,5 @@
 ---
-title: CTO Registry API Reference v1.16
+title: CTO Registry API Reference v1.17
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell: cURL
@@ -26,7 +26,7 @@ search: true
 
 # CTO Registry API Reference
 
-<aside class="notice"><strong>Version: 1.16.0, Published: Tue May 30 2023 13:44:53 GMT-0400 (Eastern Daylight Time)</strong></aside>
+<aside class="notice"><strong>Version: 1.17.0, Published: Mon Aug 21 2023 14:04:45 GMT-0400 (Eastern Daylight Saving Time)</strong></aside>
 
 The CTO Registry is a project by Clinical Trials Ontario that builds on the functionality provided by the CTO Stream system.
 The backbone of the CTO Registry is a set of REST APIs. This documentation describes the various requests that can be made

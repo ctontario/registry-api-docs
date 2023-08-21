@@ -720,17 +720,8 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
             }
           }
         },
-        "invoiceHistoryActions": {
+        "historyActions": {
           "id": "StudyFundingHistoryActionDictionary",
-          "patternProperties": {
-            "^[a-zA-Z_$][\\w$]*$": {
-              "properties": {"code": {"type": "string"}, "label": {"type": "string"}},
-              "required": ["code", "label"]
-            }
-          }
-        },
-        "paymentSummaryHistoryActions": {
-          "id": "StudyFundingPaymentSummaryHistoryActionDictionary",
           "patternProperties": {
             "^[a-zA-Z_$][\\w$]*$": {
               "properties": {"code": {"type": "string"}, "label": {"type": "string"}},
@@ -739,12 +730,7 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
           }
         }
       },
-      "required": [
-        "paymentReasons",
-        "paymentTypes",
-        "invoiceHistoryActions",
-        "paymentSummaryHistoryActions"
-      ]
+      "required": ["paymentReasons", "paymentTypes", "historyActions"]
     }
   },
   "required": [
