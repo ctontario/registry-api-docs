@@ -862,7 +862,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId/institution/:institutionId"
             "locality": {"type": "string"},
             "region": {"type": "string"},
             "postalCode": {"type": "string"},
-            "extendedAddress": {"type": "array", "items": {"type": "string"}},
+            "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
             "countryName": {"type": ["string", "null"]}
           },
           "required": []
@@ -1258,6 +1258,17 @@ curl "https://ctoregistry.com/api/v1/user/"
             "properties": {
               "isPasswordSet": {"type": "boolean"},
               "isNewAccount": {"type": "boolean"},
+              "otp": {
+                "properties": {
+                  "isVerified": {"type": "boolean"},
+                  "isEnabled": {"type": "boolean"},
+                  "ascii": {"type": "string"},
+                  "hex": {"type": "string"},
+                  "base32": {"type": "string"},
+                  "authUrl": {"type": "string"}
+                },
+                "required": ["isVerified", "isEnabled"]
+              },
               "updateDt": {"type": "date"},
               "createDt": {"type": "date"},
               "status": {
@@ -1668,6 +1679,17 @@ curl "https://ctoregistry.com/api/v1/user/:userId"
           "properties": {
             "isPasswordSet": {"type": "boolean"},
             "isNewAccount": {"type": "boolean"},
+            "otp": {
+              "properties": {
+                "isVerified": {"type": "boolean"},
+                "isEnabled": {"type": "boolean"},
+                "ascii": {"type": "string"},
+                "hex": {"type": "string"},
+                "base32": {"type": "string"},
+                "authUrl": {"type": "string"}
+              },
+              "required": ["isVerified", "isEnabled"]
+            },
             "updateDt": {"type": "date"},
             "createDt": {"type": "date"},
             "status": {
@@ -1732,7 +1754,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []

@@ -2933,7 +2933,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
             "locality": {"type": "string"},
             "region": {"type": "string"},
             "postalCode": {"type": "string"},
-            "extendedAddress": {"type": "array", "items": {"type": "string"}},
+            "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
             "countryName": {"type": ["string", "null"]}
           },
           "required": []
@@ -3770,7 +3770,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []

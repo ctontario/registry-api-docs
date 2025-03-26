@@ -363,6 +363,670 @@ Gets the share metrics report used to determine Committee assigned and for overa
 system | admin | N/A|N/A
 system | support | N/A|N/A
 
+## MetricsStudyReview - <em>Study review metrics</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/metrics/study-review"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "query": {
+    "id": "/MetricsStudyReviewQuery",
+    "properties": {
+      "isProvincial": {
+        "type": "boolean",
+        "description": "If true, reports on PIA and OPIA, if false, reports on CIA and OCIA"
+      },
+      "startDt": {"type": "string", "format": "date-time"},
+      "endDt": {"type": "string", "format": "date-time"},
+      "committeeIds": {
+        "type": ["string", "array"],
+        "description": "list of committeeIds to filter by"
+      },
+      "includeRelatedCommittees": {
+        "type": "boolean",
+        "description": "if true, finds related committees using the parent committee Id"
+      },
+      "studyIds": {"type": ["string", "array"], "description": "list of study Ids to filter by"},
+      "csv": {
+        "type": "boolean",
+        "description": "if true, returns the report as a CSV file for download, if false returns the json data"
+      },
+      "csvType": {
+        "type": "string",
+        "enum": ["totals", "data", "all"],
+        "description": "controls how the CSV  report will be output, defaults to all"
+      }
+    },
+    "required": []
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/MetricsStudyReviewResponse",
+  "properties": {
+    "totals": {
+      "properties": {
+        "screeningTimeTotal": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "screeningTimeCTO": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "screeningTimeStudyTeam": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "screeningTimeREB": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "notFullBoardCount": {
+          "properties": {
+            "all": {"type": "number"},
+            "ct": {"type": "number"},
+            "obs": {"type": "number"}
+          }
+        },
+        "pendingBoRTime": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "reviewTimeStudyTeam": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "reviewTimeREB": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "reviewTimeTotal": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "applicationIncompleteCount": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "sendReviewLetterCount": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        },
+        "submissionCount": {
+          "properties": {
+            "all": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "ct": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "obs": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "fb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            },
+            "nfb": {
+              "properties": {
+                "count": {"type": "number"},
+                "avg": {"type": "number"},
+                "med": {"type": "number"},
+                "high": {"type": "number"},
+                "low": {"type": "number"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "",
+        "properties": {
+          "projectIdNumber": {"type": "number"},
+          "applicationType": {"type": "string"},
+          "formCode": {"type": "string"},
+          "reb": {"type": "string"},
+          "hasFullBoardReview": {"type": "boolean"},
+          "firstReviewType": {"type": "string"},
+          "centre": {"type": "string"},
+          "applicationIncompleteCount": {"type": "number"},
+          "sendReviewLetterCount": {"type": "number"},
+          "submissionCount": {"type": "number"},
+          "isInvestigatorInitiated": {"type": "boolean"},
+          "hasFees": {"type": "string"},
+          "dates": {
+            "submitDt": {"type": "string", "format": "date"},
+            "assignBoRDt": {"type": "string", "format": "date"},
+            "acceptBoRDt": {"type": "string", "format": "date"},
+            "firstReviewDt": {"type": "string", "format": "date"},
+            "completeDt": {"type": "string", "format": "date"},
+            "approvalDt": {"type": "string", "format": "date"}
+          },
+          "times": {
+            "screeningTimeTotal": {"type": "number", "description": "in days"},
+            "screeningTimeCTO": {"type": "number", "description": "in days"},
+            "screeningTimeREB": {"type": "number", "description": "in days"},
+            "pendingBoRTime": {"type": "number", "description": "in days"},
+            "screeningTimeStudyTeam": {"type": "number", "description": "in days"},
+            "reviewTimeTotal": {"type": "number", "description": "in days"},
+            "reviewTimeREB": {"type": "number", "description": "in days"},
+            "reviewTimeStudyTeam": {"type": "number", "description": "in days"}
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  "required": ["totals", "data"]
+}
+```
+
+
+Gets a report of study review times and counts of events, includes totals in the output
+
+### HTTP Request
+
+`GET /metrics/study-review`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | support | N/A|N/A
+
 ## QuickStartSiteReport - <em>QuickSTART Site Report</em>
 
 

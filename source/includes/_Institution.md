@@ -657,7 +657,7 @@ curl "https://ctoregistry.com/api/v1/institution/"
               "locality": {"type": "string"},
               "region": {"type": "string"},
               "postalCode": {"type": "string"},
-              "extendedAddress": {"type": "array", "items": {"type": "string"}},
+              "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
               "countryName": {"type": ["string", "null"]}
             },
             "required": []
@@ -726,7 +726,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId/payee"
             "locality": {"type": "string"},
             "region": {"type": "string"},
             "postalCode": {"type": "string"},
-            "extendedAddress": {"type": "array", "items": {"type": "string"}},
+            "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
             "countryName": {"type": ["string", "null"]}
           },
           "required": []
@@ -948,7 +948,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -1006,7 +1006,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId"
             "locality": {"type": "string"},
             "region": {"type": "string"},
             "postalCode": {"type": "string"},
-            "extendedAddress": {"type": "array", "items": {"type": "string"}},
+            "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
             "countryName": {"type": ["string", "null"]}
           },
           "required": []
@@ -1465,7 +1465,7 @@ curl "https://ctoregistry.com/api/v1/dictionary/institution-search/:searchString
               "locality": {"type": "string"},
               "region": {"type": "string"},
               "postalCode": {"type": "string"},
-              "extendedAddress": {"type": "array", "items": {"type": "string"}},
+              "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
               "countryName": {"type": ["string", "null"]}
             },
             "required": []

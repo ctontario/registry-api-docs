@@ -84,7 +84,7 @@ curl "https://ctoregistry.com/api/v1/admin/moderation/user"
                     "locality": {"type": "string"},
                     "region": {"type": "string"},
                     "postalCode": {"type": "string"},
-                    "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                    "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                     "countryName": {"type": ["string", "null"]}
                   },
                   "required": []

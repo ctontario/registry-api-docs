@@ -58,6 +58,58 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
             }
           }
         },
+        "phis": {
+          "id": "StudyPHIDictionary",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
+        },
+        "waiverOfConsentTypes": {
+          "id": "StudyWaiverOfConsentTypeDictionary",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
+        },
+        "informedConsents": {
+          "id": "StudyInformedConsentDictionary",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
+        },
+        "studyDataSources": {
+          "id": "StudyDataSourceDictionary",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
+        },
         "interventions": {
           "id": "StudyInterventionDictionary",
           "patternProperties": {
@@ -107,7 +159,18 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
           }
         }
       },
-      "required": ["status", "ctaitaTypes", "interventions", "funding", "populations", "localRoles"]
+      "required": [
+        "status",
+        "ctaitaTypes",
+        "phis",
+        "waiverOfConsentTypes",
+        "informedConsents",
+        "studyDataSources",
+        "interventions",
+        "funding",
+        "populations",
+        "localRoles"
+      ]
     },
     "contact": {
       "id": "ContactDictionaries",

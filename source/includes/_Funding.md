@@ -696,7 +696,7 @@ curl "https://ctoregistry.com/api/v1/funding/institution-search/:searchString?"
               "locality": {"type": "string"},
               "region": {"type": "string"},
               "postalCode": {"type": "string"},
-              "extendedAddress": {"type": "array", "items": {"type": "string"}},
+              "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
               "countryName": {"type": ["string", "null"]}
             },
             "required": []
@@ -714,7 +714,7 @@ curl "https://ctoregistry.com/api/v1/funding/institution-search/:searchString?"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -935,7 +935,7 @@ curl "https://ctoregistry.com/api/v1/funding/invoices"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -1410,7 +1410,7 @@ curl "https://ctoregistry.com/api/v1/funding/"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -1794,7 +1794,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -1953,7 +1953,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
                 "locality": {"type": "string"},
                 "region": {"type": "string"},
                 "postalCode": {"type": "string"},
-                "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                 "countryName": {"type": ["string", "null"]}
               },
               "required": []
@@ -2543,6 +2543,7 @@ Downloads one document from the specified study funding payment summary.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | funding | N/A|N/A
+institution | admin | paymentSummary|The payment date has a recorded for the requested data.                        The payee institution matches the privilege target institution.
 
 ## StudyFundingPaymentSummaryList - <em>Get Study Funding Payment Summary List</em>
 
@@ -2616,7 +2617,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -2657,7 +2658,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary"
                     "locality": {"type": "string"},
                     "region": {"type": "string"},
                     "postalCode": {"type": "string"},
-                    "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                    "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                     "countryName": {"type": ["string", "null"]}
                   },
                   "required": []
@@ -2699,7 +2700,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary"
                     "locality": {"type": "string"},
                     "region": {"type": "string"},
                     "postalCode": {"type": "string"},
-                    "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                    "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                     "countryName": {"type": ["string", "null"]}
                   },
                   "required": []
@@ -2773,6 +2774,7 @@ Gets a filterable list of payment summaries recorded in the system
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | funding | N/A|N/A
+institution | admin | N/A|The payment date has a recorded for the requested data.                        The payee institution matches the privilege target institution.
 
 ## StudyFundingPaymentSummaryPayeeUpdate - <em>Update Study Funding Payee</em>
 
@@ -3044,7 +3046,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
                 "locality": {"type": "string"},
                 "region": {"type": "string"},
                 "postalCode": {"type": "string"},
-                "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                 "countryName": {"type": ["string", "null"]}
               },
               "required": []
@@ -3085,7 +3087,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -3127,7 +3129,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -3263,7 +3265,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -3405,6 +3407,7 @@ Gets the details for one payment summary
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | funding | N/A|N/A
+institution | admin | paymentSummary|The payment date has a recorded for the requested data.                        The payee institution matches the privilege target institution.
 
 ## StudyFundingPaymentSummarySaveHistory - <em>Study Funding Add Payment Summary History</em>
 
@@ -3600,7 +3603,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
                   "locality": {"type": "string"},
                   "region": {"type": "string"},
                   "postalCode": {"type": "string"},
-                  "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                  "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                   "countryName": {"type": ["string", "null"]}
                 },
                 "required": []
@@ -3801,7 +3804,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                 "locality": {"type": "string"},
                 "region": {"type": "string"},
                 "postalCode": {"type": "string"},
-                "extendedAddress": {"type": "array", "items": {"type": "string"}},
+                "extendedAddress": {"type": "array", "items": {"type": ["string", "null"]}},
                 "countryName": {"type": ["string", "null"]}
               },
               "required": []
@@ -4071,10 +4074,10 @@ curl -X PUT "https://ctoregistry.com/api/v1/funding/:studyFundingId/recalculate-
 ```json
 {
   "params": {
-    "id": "/StudyParams",
+    "id": "/StudyFundingParams",
     "type": "object",
-    "properties": {"studyId": {"type": "string"}},
-    "required": ["studyId"]
+    "properties": {"studyFundingId": {"type": "string"}},
+    "required": ["studyFundingId"]
   }
 }
 ```

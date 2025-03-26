@@ -291,13 +291,6 @@ curl "https://ctoregistry.com/api/v1/dictionary/committee"
   -H "Content-Type: application/json"
 ```
 
-> Request Schema
-
-```json
-{}
-```
-
-
 > Response Schema
 
 ```json

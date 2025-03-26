@@ -307,6 +307,8 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
  Scope      | Role       | Auth Source | Restrictions
 ------------|------------|-------------|----------------
 system | * | N/A|N/A
+committee | member | study|N/A
+institution | admin | study|Study has a centre application for the target institution of the privilege.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR
 
 ## StudyList - <em>Get Studies</em>
 
@@ -490,7 +492,7 @@ curl "https://ctoregistry.com/api/v1/study/"
 ------------|------------|-------------|----------------
 system | * | N/A|N/A
 institution | member | N/A|User has a collaborator role for the target study.
-institution | admin | N/A|Study has a centre application for the target institution of the privilege.
+institution | admin | N/A|Study has a centre application for the target institution of the privilege.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR
 committee | member | N/A|Study REB is set to the target of the privilege.
 
 ## StudyProfile - <em>Get Study</em>
@@ -569,11 +571,86 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
           },
           "required": ["name", "contact"]
         },
+        "approvedSharedQuestionsReviewReference": {"type": "string"},
         "ctaita": {"type": "boolean"},
         "ctaitaTypes": {
           "type": "array",
           "items": {"type": "string", "enum": ["ctaFda", "ctaNhp", "itaMedDevices"]},
           "description": "Dictionary: Clinical Trial CTA/ITA Types"
+        },
+        "phi": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "address",
+              "admissionDate",
+              "age",
+              "deviceIdentifier",
+              "dischargeDate",
+              "driversLicense",
+              "email",
+              "email2",
+              "family",
+              "fax",
+              "postalFirst3",
+              "dateOfBirth",
+              "dateOfDeath",
+              "photo",
+              "initials",
+              "fullName",
+              "postal",
+              "healthCardNumber",
+              "ipAddress",
+              "medicalDeviceIdentifier",
+              "medicalRecordNumber",
+              "none",
+              "other",
+              "otherInformation",
+              "dateOfBirthPartial",
+              "dateOfBirthPartial2",
+              "dateOfDeathPartial",
+              "initialsPartial",
+              "initialsPartial2",
+              "specimenNumber",
+              "race",
+              "sex",
+              "sin",
+              "phone",
+              "voice"
+            ]
+          },
+          "description": "Dictionary: Clinical Trial PHI Types"
+        },
+        "waiverOfConsent": {"type": "boolean"},
+        "waiverOfConsentType": {
+          "type": "string",
+          "enum": ["all", "some"],
+          "description": "Dictionary: Clinical Trial Waiver of Consent Types"
+        },
+        "waiverOfConsentDesc": {"type": ["string", "null"]},
+        "informedConsent": {
+          "type": "array",
+          "items": {"type": "string", "enum": ["thirdParty", "deferred", "waiver"]},
+          "description": "Dictionary: Clinical Trial Informed Consent Types"
+        },
+        "withdrawData": {"type": "boolean"},
+        "studyDataSource": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "medicalCharts",
+              "directCollection",
+              "ices",
+              "biospecimens",
+              "registry",
+              "existingDataset",
+              "observation",
+              "other"
+            ]
+          },
+          "description": "Dictionary: Clinical Trial Study Data Source Types"
         },
         "ohrp": {"type": "boolean"},
         "fda": {"type": "boolean"},
@@ -596,6 +673,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
         "studyDisplayName": {"type": ["string", "number"]},
         "studyIdentifier": {"type": ["string", "null"]},
         "shortTitle": {"type": "string"},
+        "studyAcronym": {"type": "string"},
         "title": {"type": ["string", "null"]},
         "reviewerLink": {"type": "string"},
         "applicantLink": {"type": "string"},
@@ -938,4 +1016,4 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
 system | * | N/A|N/A
 study | applicant | study|Study data is filtered to only contain centre applications for the target institution.
 committee | member | study|N/A
-institution | admin | study|Study data is filtered to only contain centre applications for the target institution.
+institution | admin | study|Study data is filtered to only contain centre applications for the target institution.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR
