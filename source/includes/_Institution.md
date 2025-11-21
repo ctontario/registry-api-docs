@@ -987,6 +987,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId"
         "sites"
       ]
     },
+    "userCount": {"type": "number"},
     "legalEntity": {
       "id": "/InstitutionShortProfile",
       "type": "object",
@@ -1025,7 +1026,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId"
       "required": ["id", "name", "shortName"]
     }
   },
-  "required": ["institution"]
+  "required": ["institution", "userCount"]
 }
 ```
 
@@ -1066,8 +1067,9 @@ curl -X POST "https://ctoregistry.com/api/v1/institution/:institutionId/quick-st
     "type": "object",
     "properties": {
       "userId": {"type": ["string", "null"]},
+      "dueType": {"type": "string", "enum": ["timeline", "calendar", "variable"]},
       "dueDay": {"type": "integer", "minimum": 1},
-      "dueType": {"type": "string", "enum": ["fixed", "variable"]},
+      "dueDt": {"type": "string", "format": "date-time"},
       "dueAfterEvent": {
         "type": ["string", "null"],
         "enum": [null, "contractApproved", "budgetApproved", "fullApproval"]
@@ -1079,7 +1081,7 @@ curl -X POST "https://ctoregistry.com/api/v1/institution/:institutionId/quick-st
       "typeOther": {"type": ["string", "null"]},
       "action": {"type": "string"}
     },
-    "required": ["dueDay", "dueType", "dueAfterEvent", "type", "action"]
+    "required": ["dueType", "type", "action"]
   }
 }
 ```
@@ -1202,8 +1204,9 @@ curl -X PUT "https://ctoregistry.com/api/v1/institution/:institutionId/quick-sta
     "type": "object",
     "properties": {
       "userId": {"type": ["string", "null"]},
+      "dueType": {"type": "string", "enum": ["timeline", "calendar", "variable"]},
       "dueDay": {"type": "integer", "minimum": 1},
-      "dueType": {"type": "string", "enum": ["fixed", "variable"]},
+      "dueDt": {"type": "string", "format": "date-time"},
       "dueAfterEvent": {
         "type": ["string", "null"],
         "enum": [null, "contractApproved", "budgetApproved", "fullApproval"]
@@ -1215,7 +1218,7 @@ curl -X PUT "https://ctoregistry.com/api/v1/institution/:institutionId/quick-sta
       "typeOther": {"type": ["string", "null"]},
       "action": {"type": "string"}
     },
-    "required": ["dueDay", "dueType", "dueAfterEvent", "type", "action"]
+    "required": ["dueType", "type", "action"]
   }
 }
 ```
@@ -1301,7 +1304,7 @@ curl "https://ctoregistry.com/api/v1/institution/:institutionId/quick-start-appr
           "action": {"type": "string"},
           "createUserId": {"type": "object"},
           "assignedUserId": {"type": "object"},
-          "dueType": {"type": "string", "enum": ["fixed", "variable"]},
+          "dueType": {"type": "string", "enum": ["timeline", "calendar", "variable"]},
           "dueAfterEvent": {
             "type": "string",
             "enum": ["contractApproved", "budgetApproved", "fullApproval"]

@@ -252,6 +252,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
         "properties": {
           "formCode": {"type": "string"},
           "formName": {"type": "string"},
+          "formNameUnmapped": {"type": "string"},
           "reviewReferences": {
             "type": "array",
             "items": {
@@ -268,6 +269,20 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
           "initialSubmitDt": {"type": "date"},
           "hasFees": {"type": ["boolean", "null"]},
           "centre": {"type": ["string", "null"]},
+          "centreStatus": {
+            "type": ["string", "null"],
+            "enum": [
+              "Active",
+              "Completed",
+              "Expired",
+              "None",
+              "Not Approved",
+              "Pending",
+              "Suspended",
+              "Terminated",
+              "Withdrawn"
+            ]
+          },
           "events": {
             "type": "array",
             "items": {
@@ -282,7 +297,14 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
             }
           }
         },
-        "required": ["formCode", "formName", "formIdNumber", "reviewReferences", "events"]
+        "required": [
+          "formCode",
+          "formName",
+          "formNameUnmapped",
+          "formIdNumber",
+          "reviewReferences",
+          "events"
+        ]
       }
     }
   },
@@ -308,7 +330,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
 ------------|------------|-------------|----------------
 system | * | N/A|N/A
 committee | member | study|N/A
-institution | admin | study|Study has a centre application for the target institution of the privilege.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR
+institution | admin | study|Study has a participating site application for the target institution of the privilege.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR
 
 ## StudyList - <em>Get Studies</em>
 
@@ -492,7 +514,7 @@ curl "https://ctoregistry.com/api/v1/study/"
 ------------|------------|-------------|----------------
 system | * | N/A|N/A
 institution | member | N/A|User has a collaborator role for the target study.
-institution | admin | N/A|Study has a centre application for the target institution of the privilege.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR
+institution | admin | N/A|Study has a participating site application for the target institution of the privilege.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR
 committee | member | N/A|Study REB is set to the target of the privilege.
 
 ## StudyProfile - <em>Get Study</em>
@@ -854,7 +876,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
               },
               "name": {"type": "string"},
               "status": {
-                "type": "string",
+                "type": ["string", "null"],
                 "enum": [
                   "Active",
                   "Completed",
@@ -1014,6 +1036,6 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
  Scope      | Role       | Auth Source | Restrictions
 ------------|------------|-------------|----------------
 system | * | N/A|N/A
-study | applicant | study|Study data is filtered to only contain centre applications for the target institution.
+study | applicant | study|Study data is filtered to only contain participating site applications for the target institution.
 committee | member | study|N/A
-institution | admin | study|Study data is filtered to only contain centre applications for the target institution.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR
+institution | admin | study|Study data is filtered to only contain participating site applications for the target institution.                        Study where the lead applicant institution matches the target institution, and the study has been approved by the BoR

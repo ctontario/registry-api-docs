@@ -1956,7 +1956,19 @@ curl "https://ctoregistry.com/api/v1/user/:userId/quick-start"
         "properties": {
           "id": {"type": "object"},
           "quickStartIdentifier": {"type": "string"},
-          "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]},
+          "status": {
+            "type": "string",
+            "enum": [
+              "paused",
+              "pending",
+              "screen",
+              "review",
+              "startup",
+              "prep",
+              "active",
+              "completed"
+            ]
+          },
           "shortTitle": {"type": "string"},
           "sponsorInstitutionId": {"type": "object"},
           "isSponsorManaged": {"type": "boolean"},
@@ -1965,6 +1977,13 @@ curl "https://ctoregistry.com/api/v1/user/:userId/quick-start"
           "isSiteEngagement": {"type": "boolean"},
           "isSponsorEngagement": {"type": "boolean"},
           "projectIdNumber": {"type": "number"},
+          "creationProgress": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["project", "sponsor", "study", "studyDocuments", "contract", "budget"]
+            }
+          },
           "reb": {
             "type": "object",
             "properties": {"id": {"type": "object"}, "name": {"type": "string"}},
@@ -1982,6 +2001,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId/quick-start"
           "isStreamStudy",
           "isSiteEngagement",
           "isSponsorEngagement",
+          "creationProgress",
           "createDt",
           "updateDt"
         ]

@@ -74,6 +74,61 @@ Updates the study funding and related invoices reminder settings
 system | admin | N/A|N/A
 system | funding | N/A|N/A
 
+## StudyFundingDeleteHistory - <em>Study Funding Delete History</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/funding/:studyFundingId/history/:historyId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingDeleteHistoryParams",
+    "properties": {"studyFundingId": {"type": "string"}, "historyId": {"type": "string"}},
+    "required": ["studyFundingId", "historyId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+removes a note to from the study funding history.
+
+### HTTP Request
+
+`DELETE /funding/:studyFundingId/history/:historyId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
 ## StudyFundingDocumentDelete - <em>Delete Study Funding Document</em>
 
 
@@ -2021,6 +2076,8 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
               "action": {
                 "type": "string",
                 "enum": [
+                  "reb_update",
+                  "set_fee_schedule",
                   "void",
                   "payee_update",
                   "fees_override",
@@ -2217,12 +2274,12 @@ curl -X POST "https://ctoregistry.com/api/v1/funding/payments/:paymentId/history
 ```json
 {
   "params": {
-    "id": "StudyFundingPaymentSummarySaveHistoryParams",
-    "properties": {"paymentSummaryId": {"type": "string"}},
-    "required": ["paymentSummaryId"]
+    "id": "StudyFundingPaymentSaveHistoryParams",
+    "properties": {"paymentId": {"type": "string"}},
+    "required": ["paymentId"]
   },
   "body": {
-    "id": "StudyFundingPaymentSummarySaveHistoryBody",
+    "id": "StudyFundingPaymentSaveHistoryBody",
     "type": "object",
     "properties": {
       "note": {"type": "string"},
@@ -3191,6 +3248,8 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
           "action": {
             "type": "string",
             "enum": [
+              "reb_update",
+              "set_fee_schedule",
               "void",
               "payee_update",
               "fees_override",
@@ -3333,6 +3392,8 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
                 "action": {
                   "type": "string",
                   "enum": [
+                    "reb_update",
+                    "set_fee_schedule",
                     "void",
                     "payee_update",
                     "fees_override",
@@ -3671,6 +3732,8 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
                 "action": {
                   "type": "string",
                   "enum": [
+                    "reb_update",
+                    "set_fee_schedule",
                     "void",
                     "payee_update",
                     "fees_override",
@@ -3830,6 +3893,54 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
           },
           "required": ["name"]
         },
+        "history": {
+          "type": "array",
+          "items": {
+            "properties": {
+              "id": {"type": "object"},
+              "actionDt": {"type": "date"},
+              "action": {
+                "type": "string",
+                "enum": [
+                  "reb_update",
+                  "set_fee_schedule",
+                  "void",
+                  "payee_update",
+                  "fees_override",
+                  "note",
+                  "document_create",
+                  "document_update",
+                  "invoice_create",
+                  "invoice_update_total",
+                  "invoice_update_value",
+                  "invoice_send_initial",
+                  "invoice_send_reminder",
+                  "invoice_send_update",
+                  "institution_add",
+                  "institution_update",
+                  "institution_link",
+                  "payment_delete",
+                  "payment_add",
+                  "payment_date_update",
+                  "payment_reb_create",
+                  "payment_reb_update",
+                  "payment_reb_delete",
+                  "payment_institution_create",
+                  "payment_institution_update",
+                  "payment_institution_delete",
+                  "payment_institution_delete_error",
+                  "payment_sponsor_create",
+                  "payment_sponsor_update",
+                  "payment_sponsor_delete",
+                  "summary_create"
+                ]
+              },
+              "reason": {"type": "string"},
+              "userId": {"type": "object"}
+            },
+            "required": ["id", "actionDt", "action", "reason"]
+          }
+        },
         "fees": {
           "id": "StudyFundingFees",
           "properties": {
@@ -3945,6 +4056,8 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                         "action": {
                           "type": "string",
                           "enum": [
+                            "reb_update",
+                            "set_fee_schedule",
                             "void",
                             "payee_update",
                             "fees_override",
@@ -4105,6 +4218,71 @@ Processes the study funding to update an missing invoices. Does the same actions
 ### HTTP Request
 
 `PUT /funding/:studyFundingId/recalculate-invoices`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | funding | N/A|N/A
+
+## StudyFundingSaveHistory - <em>Study Funding Add History</em>
+
+
+```shell
+curl -X POST "https://ctoregistry.com/api/v1/funding/:studyFundingId/history"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "StudyFundingSaveHistoryParams",
+    "properties": {"studyFundingId": {"type": "string"}},
+    "required": ["studyFundingId"]
+  },
+  "body": {
+    "id": "StudyFundingSaveHistoryBody",
+    "type": "object",
+    "properties": {
+      "note": {"type": "string"},
+      "historyId": {"type": "string"},
+      "date": {"type": "string", "format": "date-time"}
+    },
+    "required": ["note"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+adds a note to the study funding history. Date can be specified or it will default to today
+
+### HTTP Request
+
+`POST /funding/:studyFundingId/history`
 
 
 

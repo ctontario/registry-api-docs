@@ -99,8 +99,9 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:in
     "type": "object",
     "properties": {
       "userId": {"type": ["string", "null"]},
+      "dueType": {"type": "string", "enum": ["timeline", "calendar", "variable"]},
       "dueDay": {"type": "integer", "minimum": 1},
-      "dueType": {"type": "string", "enum": ["fixed", "variable"]},
+      "dueDt": {"type": "string", "format": "date-time"},
       "dueAfterEvent": {
         "type": ["string", "null"],
         "enum": [null, "contractApproved", "budgetApproved", "fullApproval"]
@@ -112,7 +113,7 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:in
       "typeOther": {"type": ["string", "null"]},
       "action": {"type": "string"}
     },
-    "required": ["dueDay", "dueType", "dueAfterEvent", "type", "action"]
+    "required": ["dueType", "type", "action"]
   }
 }
 ```
@@ -263,8 +264,9 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:in
     "type": "object",
     "properties": {
       "userId": {"type": ["string", "null"]},
+      "dueType": {"type": "string", "enum": ["timeline", "calendar", "variable"]},
       "dueDay": {"type": "integer", "minimum": 1},
-      "dueType": {"type": "string", "enum": ["fixed", "variable"]},
+      "dueDt": {"type": "string", "format": "date-time"},
       "dueAfterEvent": {
         "type": ["string", "null"],
         "enum": [null, "contractApproved", "budgetApproved", "fullApproval"]
@@ -276,7 +278,7 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:in
       "typeOther": {"type": ["string", "null"]},
       "action": {"type": "string"}
     },
-    "required": ["dueDay", "dueType", "dueAfterEvent", "type", "action"]
+    "required": ["dueType", "type", "action"]
   }
 }
 ```
@@ -374,7 +376,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
           "createUserId": {"type": "object"},
           "assignedUserId": {"type": "object"},
           "signUserId": {"type": "object"},
-          "dueType": {"type": "string", "enum": ["fixed", "variable"]},
+          "dueType": {"type": "string", "enum": ["timeline", "calendar", "variable"]},
           "dueAfterEvent": {
             "type": "string",
             "enum": ["contractApproved", "budgetApproved", "fullApproval"]
@@ -389,16 +391,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
           "createDt": {"type": "date"},
           "updateDt": {"type": "date"}
         },
-        "required": [
-          "id",
-          "type",
-          "action",
-          "createUserId",
-          "dueType",
-          "dueDay",
-          "createDt",
-          "updateDt"
-        ]
+        "required": ["id", "type", "action", "createUserId", "dueType", "createDt", "updateDt"]
       }
     }
   },
@@ -453,6 +446,7 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/"
           "required": ["userId"]
         }
       },
+      "isStartupChecklist": {"type": "boolean"},
       "isSponsorManaged": {"type": "boolean"},
       "isSingleSiteStudy": {"type": "boolean"},
       "isSponsorEngagement": {"type": "boolean"},
@@ -465,17 +459,9 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/"
         "properties": {"name": {"type": "string"}, "committeeId": {"type": ["string", "null"]}},
         "required": ["name"]
       },
-      "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]}
+      "status": {"type": "string", "enum": ["pending", "screen", "startup", "active", "completed"]}
     },
-    "required": [
-      "shortTitle",
-      "adminUsers",
-      "isSingleSiteStudy",
-      "isSponsorEngagement",
-      "isSiteEngagement",
-      "isStreamStudy",
-      "quickStartIdentifier"
-    ]
+    "required": ["shortTitle", "adminUsers", "quickStartIdentifier"]
   }
 }
 ```
@@ -810,13 +796,13 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:in
       "documentId": {"type": "string"},
       "category": {
         "type": "string",
-        "enum": ["paused", "pending", "screen", "review", "active", "completed"]
+        "enum": ["paused", "pending", "screen", "review", "startup", "prep", "active", "completed"]
       },
       "type": {"type": "string", "enum": ["budget", "contract", "protocol"]},
       "visibility": {"type": "array", "items": {"type": "string", "enum": ["site", "sponsor"]}},
       "name": {"type": "string"}
     },
-    "required": ["category", "type", "name"]
+    "required": ["documentId", "category", "type", "name"]
   }
 }
 ```
@@ -890,7 +876,7 @@ curl -X POST "https://ctoregistry.com/api/v1/upload/quick-start/:quickStartId/si
       "category": {
         "type": "string",
         "description": "The document type",
-        "enum": ["paused", "pending", "screen", "review", "active", "completed"]
+        "enum": ["paused", "pending", "screen", "review", "startup", "prep", "active", "completed"]
       },
       "type": {
         "type": "string",
@@ -1076,7 +1062,19 @@ curl "https://ctoregistry.com/api/v1/quick-start/"
         "properties": {
           "id": {"type": "object"},
           "quickStartIdentifier": {"type": "string"},
-          "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]},
+          "status": {
+            "type": "string",
+            "enum": [
+              "paused",
+              "pending",
+              "screen",
+              "review",
+              "startup",
+              "prep",
+              "active",
+              "completed"
+            ]
+          },
           "shortTitle": {"type": "string"},
           "sponsorInstitutionId": {"type": "object"},
           "isSponsorManaged": {"type": "boolean"},
@@ -1085,6 +1083,13 @@ curl "https://ctoregistry.com/api/v1/quick-start/"
           "isSiteEngagement": {"type": "boolean"},
           "isSponsorEngagement": {"type": "boolean"},
           "projectIdNumber": {"type": "number"},
+          "creationProgress": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["project", "sponsor", "study", "studyDocuments", "contract", "budget"]
+            }
+          },
           "reb": {
             "type": "object",
             "properties": {"id": {"type": "object"}, "name": {"type": "string"}},
@@ -1102,6 +1107,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/"
           "isStreamStudy",
           "isSiteEngagement",
           "isSponsorEngagement",
+          "creationProgress",
           "createDt",
           "updateDt"
         ]
@@ -1177,12 +1183,25 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
         "sponsorInstitutionId": {"type": "object"},
         "croInstitutionId": {"type": "object"},
         "isPreScreenRequired": {"type": "boolean"},
+        "isStartupChecklist": {"type": "boolean"},
         "isSponsorManaged": {"type": "boolean"},
         "isSingleSiteStudy": {"type": "boolean"},
         "isStreamStudy": {"type": "boolean"},
         "isSiteEngagement": {"type": "boolean"},
         "isSponsorEngagement": {"type": "boolean"},
-        "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]},
+        "status": {
+          "type": "string",
+          "enum": [
+            "paused",
+            "pending",
+            "screen",
+            "review",
+            "startup",
+            "prep",
+            "active",
+            "completed"
+          ]
+        },
         "institutionIds": {"type": "array", "items": {"type": "object"}},
         "protocol": {
           "id": "/QuickStartProtocol",
@@ -1190,9 +1209,11 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
           "properties": {
             "documentLocation": {"type": "string", "enum": ["upload", "manual"]},
             "documentName": {"type": "string"},
+            "version": {"type": ["number", "null"]},
+            "versionDt": {"type": ["date", "null"]},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation", "documentName"]
+          "required": ["documentLocation"]
         },
         "budget": {
           "id": "/QuickStartBudget",
@@ -1200,9 +1221,11 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
           "properties": {
             "documentLocation": {"type": "string", "enum": ["upload", "manual"]},
             "documentName": {"type": "string"},
+            "version": {"type": "number"},
+            "versionDt": {"type": "date"},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation", "documentName"]
+          "required": ["documentLocation"]
         },
         "contract": {
           "id": "/QuickStartContract",
@@ -1210,11 +1233,13 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
           "properties": {
             "documentLocation": {"type": "string", "enum": ["upload", "manual"]},
             "documentName": {"type": "string"},
+            "version": {"type": "number"},
+            "versionDt": {"type": "date"},
             "strategy": {"type": "string"},
             "strategyOther": {"type": "string"},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation", "documentName", "strategy"]
+          "required": ["documentLocation", "strategy"]
         },
         "documents": {
           "type": "array",
@@ -1250,18 +1275,24 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
             "type": "string",
             "enum": ["project", "sponsor", "study", "studyDocuments", "contract", "budget"]
           }
-        }
+        },
+        "createDt": {"type": "date"},
+        "updateDt": {"type": "date"}
       },
       "required": [
         "id",
         "quickStartIdentifier",
         "institutionIds",
+        "isStartupChecklist",
         "isSponsorManaged",
         "isSingleSiteStudy",
         "isStreamStudy",
         "isSiteEngagement",
         "isSponsorEngagement",
-        "creationProgress"
+        "status",
+        "creationProgress",
+        "createDt",
+        "updateDt"
       ]
     },
     "reb": {
@@ -1598,7 +1629,7 @@ curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:ins
 ```
 
 
-Sends a QuickSTART pre-screened application to the Site.  If pre-screen is required, The site status must be 'review', if not it must be pending
+Sends a QuickSTART screened application to the Site.  If screening is required, The site status must be 'review', if not it must be pending
 
 ### HTTP Request
 
@@ -1614,6 +1645,70 @@ Sends a QuickSTART pre-screened application to the Site.  If pre-screen is requi
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | admin | quickStart|N/A
+quickStart | sponsor | quickStart|N/A
+quickStart | cro | quickStart|N/A
+
+## QuickSTARTSetSiteActive - <em>QuickSTART Set Site Active</em>
+
+
+```shell
+curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/set-site-active"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/QuickStartSiteParams",
+    "type": "object",
+    "properties": {"quickStartId": {"type": "string"}, "institutionId": {"type": "string"}},
+    "required": ["quickStartId", "institutionId"]
+  },
+  "body": {
+    "id": "/QuickStartSiteSetActiveBody",
+    "type": "object",
+    "properties": {"startDt": {"type": "string", "format": "date-time"}},
+    "required": []
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Sets a QuickSTART Site as active status. Can only be performed by CTO Admin users.  Used after the startup checklist has been completed and the application has been submitted into CTO Stream
+
+### HTTP Request
+
+`PUT /quick-start/:quickStartId/sites/:institutionId/set-site-active`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | quickStartAdmin | N/A|N/A
 
 ## QuickSTARTSiteAddUser - <em>QuickSTART Site Add User</em>
 
@@ -1695,11 +1790,11 @@ quickStart | cro | quickStart|N/A
 quickStart | cro-contract | quickStart|N/A
 quickStart | cro-budget | quickStart|N/A
 
-## QuickSTARTSiteCompletePreScreen - <em>QuickSTART Complete Pre-Screen</em>
+## QuickSTARTSiteCompleteScreening - <em>QuickSTART Complete CTO Screening</em>
 
 
 ```shell
-curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/pre-screen/complete"  
+curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/screening/complete"  
   -H "Authorization: {{_JWT_TOKEN_}}"  
   -H "Content-Type: application/json"
 ```
@@ -1735,11 +1830,11 @@ curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:ins
 ```
 
 
-Marks a QuickSTART Site Pre-Screen as complete by CTO.  The site status must be 'screen'
+Marks a QuickSTART Site Screening as complete by CTO.  The site status must be 'screen'
 
 ### HTTP Request
 
-`PUT /quick-start/:quickStartId/sites/:institutionId/pre-screen/complete`
+`PUT /quick-start/:quickStartId/sites/:institutionId/screening/complete`
 
 
 
@@ -1819,7 +1914,6 @@ Updates an existing QuickSTART Site to disable notifications, set status updates
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
-quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSiteCreation - <em>QuickSTART Site Creation</em>
 
@@ -1845,7 +1939,10 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites"
     "type": "object",
     "properties": {
       "institutionId": {"type": "string"},
-      "researchCoordinatorId": {"type": "string"},
+      "researchCoordinatorId": {
+        "type": ["string", "null"],
+        "description": "required if site engagement is true for quickStart"
+      },
       "principalInvestigatorId": {"type": ["string", "null"]}
     },
     "required": ["institutionId"]
@@ -2167,7 +2264,6 @@ Deletes a pause event for an existing QuickSTART site.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
-quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSitePauseEventSave - <em>QuickSTART Site Save Pause Event</em>
 
@@ -2236,258 +2332,6 @@ Creates or updates a pause event for an existing QuickSTART site.
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
-quickStart | admin | quickStart|N/A
-
-## QuickSTARTSitePreScreenComment - <em>QuickSTART Site Pre-Screen Comment</em>
-
-
-```shell
-curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/pre-screen/comments"  
-  -H "Authorization: {{_JWT_TOKEN_}}"  
-  -H "Content-Type: application/json"
-```
-
-> Request Schema
-
-```json
-{
-  "params": {
-    "id": "/QuickStartSiteParams",
-    "type": "object",
-    "properties": {"quickStartId": {"type": "string"}, "institutionId": {"type": "string"}},
-    "required": ["quickStartId", "institutionId"]
-  },
-  "body": {
-    "id": "/QuickStartPreScreenCommentBody",
-    "type": "object",
-    "properties": {
-      "comment": {"type": "string"},
-      "area": {
-        "type": "string",
-        "enum": [
-          "title",
-          "study_type",
-          "therapeutic_area",
-          "sponsor",
-          "roster",
-          "protocol",
-          "protocol_notes",
-          "protocol_document",
-          "protocol_add_document",
-          "contract",
-          "contract_strategy",
-          "contract_notes",
-          "contract_document",
-          "contract_add_document",
-          "budget",
-          "budget_notes",
-          "budget_document",
-          "budget_add_document",
-          "overall",
-          "other"
-        ]
-      },
-      "commentId": {"type": "string"},
-      "status": {"type": "string", "enum": ["unresolved", "resolved"]}
-    },
-    "required": ["comment", "area"]
-  }
-}
-```
-
-
-> Response Schema
-
-```json
-{
-  "id": "/ActionResponse",
-  "type": "object",
-  "properties": {
-    "status": {"type": "string"},
-    "action": {"type": "string"},
-    "id": {"type": ["object", "null"]},
-    "result": {"type": ["object", "array", "string"]}
-  },
-  "required": ["status", "action", "id"]
-}
-```
-
-
-Adds or updates a comment on a QuickSTART Site Pre-Screen.  The site status must be 'screen'
-
-### HTTP Request
-
-`POST /quick-start/:quickStartId/sites/:institutionId/pre-screen/comments`
-
-
-
-### Authorization
- 
-    
- Scope      | Role       | Auth Source | Restrictions
-------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
-
-## QuickSTARTSitePreScreenCommentDelete - <em>QuickSTART Site Pre-Screen Comment</em>
-
-
-```shell
-curl -X DELETE "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/pre-screen/comments/:commentId"  
-  -H "Authorization: {{_JWT_TOKEN_}}"  
-  -H "Content-Type: application/json"
-```
-
-> Request Schema
-
-```json
-{
-  "params": {
-    "id": "/QuickStartPreScreenCommentDeleteParams",
-    "type": "object",
-    "properties": {
-      "quickStartId": {"type": "string"},
-      "institutionId": {"type": "string"},
-      "commentId": {"type": "string"}
-    },
-    "required": ["quickStartId", "institutionId", "commentId"]
-  }
-}
-```
-
-
-> Response Schema
-
-```json
-{
-  "id": "/ActionResponse",
-  "type": "object",
-  "properties": {
-    "status": {"type": "string"},
-    "action": {"type": "string"},
-    "id": {"type": ["object", "null"]},
-    "result": {"type": ["object", "array", "string"]}
-  },
-  "required": ["status", "action", "id"]
-}
-```
-
-
-Adds a comment to a QuickSTART Site to Pre-Screen.  The site status must be 'screen'
-
-### HTTP Request
-
-`DELETE /quick-start/:quickStartId/sites/:institutionId/pre-screen/comments/:commentId`
-
-
-
-### Authorization
- 
-    
- Scope      | Role       | Auth Source | Restrictions
-------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
-
-## QuickSTARTSitePreScreenComments - <em>Get QuickSTART Site Pre-Screen Comments</em>
-
-
-```shell
-curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/pre-screen/comments"  
-  -H "Authorization: {{_JWT_TOKEN_}}"  
-  -H "Content-Type: application/json"
-```
-
-> Request Schema
-
-```json
-{
-  "params": {
-    "id": "/QuickStartSiteParams",
-    "type": "object",
-    "properties": {"quickStartId": {"type": "string"}, "institutionId": {"type": "string"}},
-    "required": ["quickStartId", "institutionId"]
-  }
-}
-```
-
-
-> Response Schema
-
-```json
-{
-  "id": "/QuickStartPreScreenCommentsResponse",
-  "type": "object",
-  "properties": {
-    "data": {
-      "type": "array",
-      "items": {
-        "id": "/QuickStartPreScreenComment",
-        "properties": {
-          "id": {"type": "object"},
-          "commentUserId": {
-            "type": "object",
-            "description": "The Id of the user that created this comment"
-          },
-          "resolveUserId": {
-            "type": "object",
-            "description": "The Id of the user that resolved or responded to this comment"
-          },
-          "isSystemComment": {"type": "boolean"},
-          "status": {"type": "string", "enum": ["unresolved", "resolved"]},
-          "comment": {"type": "string"},
-          "area": {
-            "type": "string",
-            "enum": [
-              "title",
-              "study_type",
-              "therapeutic_area",
-              "sponsor",
-              "roster",
-              "protocol",
-              "protocol_notes",
-              "protocol_document",
-              "protocol_add_document",
-              "contract",
-              "contract_strategy",
-              "contract_notes",
-              "contract_document",
-              "contract_add_document",
-              "budget",
-              "budget_notes",
-              "budget_document",
-              "budget_add_document",
-              "overall",
-              "other"
-            ]
-          },
-          "createDt": {"type": "date"}
-        },
-        "required": ["id", "commentUserId", "status", "comment", "area", "createDt"]
-      }
-    }
-  },
-  "required": ["data"]
-}
-```
-
-
-Gets all comments for a QuickSTART Site Pre-Screen
-
-### HTTP Request
-
-`GET /quick-start/:quickStartId/sites/:institutionId/pre-screen/comments`
-
-
-
-### Authorization
- 
-    
- Scope      | Role       | Auth Source | Restrictions
-------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | quickStartAdmin | N/A|N/A
-quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSiteProfile - <em>QuickSTART Site</em>
 
@@ -2547,12 +2391,23 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
         },
         "status": {
           "type": "string",
-          "enum": ["paused", "pending", "screen", "review", "active", "completed"]
+          "enum": [
+            "paused",
+            "pending",
+            "screen",
+            "review",
+            "startup",
+            "prep",
+            "active",
+            "completed"
+          ]
         },
         "activeDt": {"type": "date"},
         "useProtocolDefaults": {"type": "boolean"},
         "useContractDefaults": {"type": "boolean"},
         "useBudgetDefaults": {"type": "boolean"},
+        "isStartupChecklist": {"type": "boolean"},
+        "startupChecklistId": {"type": "object"},
         "pauseEvents": {
           "type": "array",
           "items": {
@@ -2581,6 +2436,38 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
             "timerStartDt": {"type": "date"},
             "timerCompleteDt": {"type": "date"},
             "actualCompleteDt": {"type": "date"},
+            "startupChecklist": {
+              "properties": {
+                "startDt": {"type": "date"},
+                "startUserId": {"type": "object"},
+                "completeDt": {"type": "date"},
+                "sponsorStartDt": {"type": "date"},
+                "sponsorStartUserId": {"type": "object"},
+                "sponsorStartDuration": {"type": "number"},
+                "sponsorActualCompleteDt": {"type": "date"},
+                "sponsorCompleteUserId": {"type": "object"},
+                "sponsorCompleteDuration": {"type": "number"},
+                "siteStartDt": {"type": "date"},
+                "siteStartUserId": {"type": "object"},
+                "siteStartDuration": {"type": "number"},
+                "siteActualCompleteDt": {"type": "date"},
+                "siteCompleteUserId": {"type": "object"},
+                "siteCompleteDuration": {"type": "number"},
+                "rebCompleteDt": {"type": "date"},
+                "rebCompleteUserId": {"type": "object"},
+                "rebCompleteDuration": {"type": "number"},
+                "actualCompleteDt": {"type": "date"},
+                "completeUserId": {"type": "object"},
+                "completeDuration": {"type": "number"}
+              }
+            },
+            "prepApplications": {
+              "properties": {
+                "startDt": {"type": "date"},
+                "completeDt": {"type": "date"},
+                "actualCompleteDt": {"type": "date"}
+              }
+            },
             "contract": {
               "id": "/QuickStartSiteReview",
               "type": "object",
@@ -2742,6 +2629,10 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
           "properties": {
             "active": {"type": "number"},
             "daysToApprove": {"type": "number"},
+            "checklist": {"type": "number"},
+            "daysToChecklist": {"type": "number"},
+            "prep": {"type": "number"},
+            "daysToPrep": {"type": "number"},
             "contract": {
               "type": "object",
               "properties": {
@@ -2769,9 +2660,11 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
           "properties": {
             "documentLocation": {"type": "string", "enum": ["upload", "manual"]},
             "documentName": {"type": "string"},
+            "version": {"type": ["number", "null"]},
+            "versionDt": {"type": ["date", "null"]},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation", "documentName"]
+          "required": ["documentLocation"]
         },
         "budget": {
           "id": "/QuickStartBudget",
@@ -2779,9 +2672,11 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
           "properties": {
             "documentLocation": {"type": "string", "enum": ["upload", "manual"]},
             "documentName": {"type": "string"},
+            "version": {"type": "number"},
+            "versionDt": {"type": "date"},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation", "documentName"]
+          "required": ["documentLocation"]
         },
         "contract": {
           "id": "/QuickStartContract",
@@ -2789,11 +2684,13 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
           "properties": {
             "documentLocation": {"type": "string", "enum": ["upload", "manual"]},
             "documentName": {"type": "string"},
+            "version": {"type": "number"},
+            "versionDt": {"type": "date"},
             "strategy": {"type": "string"},
             "strategyOther": {"type": "string"},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation", "documentName", "strategy"]
+          "required": ["documentLocation", "strategy"]
         },
         "documents": {
           "type": "array",
@@ -2833,7 +2730,16 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
               "type": {"type": "string", "enum": ["budget", "contract", "protocol"]},
               "category": {
                 "type": "string",
-                "enum": ["paused", "pending", "screen", "review", "active", "completed"]
+                "enum": [
+                  "paused",
+                  "pending",
+                  "screen",
+                  "review",
+                  "startup",
+                  "prep",
+                  "active",
+                  "completed"
+                ]
               },
               "uploadDt": {"type": "date"},
               "link": {"type": "string"},
@@ -2860,6 +2766,23 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
             ]
           }
         },
+        "streamRebEvents": {
+          "properties": {
+            "initialSubmitted": {
+              "properties": {"eventDt": {"type": "date"}, "duration": {"type": "number"}}
+            },
+            "initialApproved": {
+              "properties": {"eventDt": {"type": "date"}, "duration": {"type": "number"}}
+            },
+            "siteSubmitted": {
+              "properties": {"eventDt": {"type": "date"}, "duration": {"type": "number"}}
+            },
+            "siteApproved": {
+              "properties": {"eventDt": {"type": "date"}, "duration": {"type": "number"}}
+            }
+          },
+          "required": ["initialSubmitted", "initialApproved", "siteSubmitted", "siteApproved"]
+        },
         "rebEvents": {
           "type": "array",
           "items": {
@@ -2880,6 +2803,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
               },
               "eventDt": {"type": "date"},
               "isDone": {"type": "boolean"},
+              "duration": {"type": "number"},
               "isDeletable": {"type": "boolean"},
               "comment": {"type": "string"}
             },
@@ -3398,13 +3322,13 @@ Submit a review for one section of data for a QuickSTART site.  The site status 
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
-quickStart | admin | quickStart|N/A
-quickStart | sponsor | quickStart|The related quickstart must not be marked as a sponsor engagement.
-quickStart | sponsor-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a sponsor engagement.
-quickStart | sponsor-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a sponsor engagement.
-quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a sponsor engagement.
-quickStart | cro-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a sponsor engagement.
+quickStart | admin | quickStart|The related quickstart must not be marked as a site engagement.
+quickStart | sponsor | quickStart|The related quickstart must not be marked as a site engagement.
+quickStart | sponsor-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a site engagement.
+quickStart | sponsor-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a site engagement.
+quickStart | cro | quickStart|The related quickstart must not be marked as a site engagement.
+quickStart | cro-contract | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a site engagement.
+quickStart | cro-budget | quickStart|The user must have the sponsor privilege related to this type of approval, ie Sponsor - Contract for a contract approval response.                        The related quickstart must not be marked as a site engagement.
 quickStartSite | rc | quickStartSite|N/A
 quickStartSite | budget | quickStartSite|The user must be assigned to the specific approval.
 quickStartSite | contract | quickStartSite|The user must be assigned to the specific approval.
@@ -3486,11 +3410,264 @@ quickStartSite | budget | quickStartSite|N/A
 quickStartSite | investigator | quickStartSite|N/A
 quickStartSite | approver | quickStartSite|N/A
 
-## QuickSTARTSiteSendToPreScreen - <em>QuickSTART Site Send to Pre-Screen</em>
+## QuickSTARTSiteScreeningComment - <em>QuickSTART Site CTO Screening Comment</em>
 
 
 ```shell
-curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/pre-screen"  
+curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/screening/comments"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/QuickStartSiteParams",
+    "type": "object",
+    "properties": {"quickStartId": {"type": "string"}, "institutionId": {"type": "string"}},
+    "required": ["quickStartId", "institutionId"]
+  },
+  "body": {
+    "id": "/QuickStartPreScreenCommentBody",
+    "type": "object",
+    "properties": {
+      "comment": {"type": "string"},
+      "area": {
+        "type": "string",
+        "enum": [
+          "title",
+          "study_type",
+          "therapeutic_area",
+          "sponsor",
+          "roster",
+          "protocol",
+          "protocol_notes",
+          "protocol_document",
+          "protocol_add_document",
+          "contract",
+          "contract_strategy",
+          "contract_notes",
+          "contract_document",
+          "contract_add_document",
+          "budget",
+          "budget_notes",
+          "budget_document",
+          "budget_add_document",
+          "overall",
+          "other"
+        ]
+      },
+      "commentId": {"type": "string"},
+      "status": {"type": "string", "enum": ["unresolved", "resolved"]}
+    },
+    "required": ["comment", "area"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Adds or updates a comment on a QuickSTART Site CTO Screening.  The site status must be 'screen'
+
+### HTTP Request
+
+`POST /quick-start/:quickStartId/sites/:institutionId/screening/comments`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | quickStartAdmin | N/A|N/A
+
+## QuickSTARTSiteScreeningCommentDelete - <em>QuickSTART Site CTO Screening Comment</em>
+
+
+```shell
+curl -X DELETE "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/screening/comments/:commentId"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/QuickStartPreScreenCommentDeleteParams",
+    "type": "object",
+    "properties": {
+      "quickStartId": {"type": "string"},
+      "institutionId": {"type": "string"},
+      "commentId": {"type": "string"}
+    },
+    "required": ["quickStartId", "institutionId", "commentId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Adds a comment to a QuickSTART Site to CTO Screening.  The site status must be 'screen'
+
+### HTTP Request
+
+`DELETE /quick-start/:quickStartId/sites/:institutionId/screening/comments/:commentId`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | quickStartAdmin | N/A|N/A
+
+## QuickSTARTSiteScreeningComments - <em>Get QuickSTART Site CTO Screening Comments</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/screening/comments"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/QuickStartSiteParams",
+    "type": "object",
+    "properties": {"quickStartId": {"type": "string"}, "institutionId": {"type": "string"}},
+    "required": ["quickStartId", "institutionId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/QuickStartPreScreenCommentsResponse",
+  "type": "object",
+  "properties": {
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "/QuickStartPreScreenComment",
+        "properties": {
+          "id": {"type": "object"},
+          "commentUserId": {
+            "type": "object",
+            "description": "The Id of the user that created this comment"
+          },
+          "resolveUserId": {
+            "type": "object",
+            "description": "The Id of the user that resolved or responded to this comment"
+          },
+          "isSystemComment": {"type": "boolean"},
+          "status": {"type": "string", "enum": ["unresolved", "resolved"]},
+          "comment": {"type": "string"},
+          "area": {
+            "type": "string",
+            "enum": [
+              "title",
+              "study_type",
+              "therapeutic_area",
+              "sponsor",
+              "roster",
+              "protocol",
+              "protocol_notes",
+              "protocol_document",
+              "protocol_add_document",
+              "contract",
+              "contract_strategy",
+              "contract_notes",
+              "contract_document",
+              "contract_add_document",
+              "budget",
+              "budget_notes",
+              "budget_document",
+              "budget_add_document",
+              "overall",
+              "other"
+            ]
+          },
+          "createDt": {"type": "date"}
+        },
+        "required": ["id", "commentUserId", "status", "comment", "area", "createDt"]
+      }
+    }
+  },
+  "required": ["data"]
+}
+```
+
+
+Gets all comments for a QuickSTART Site CTO Screening
+
+### HTTP Request
+
+`GET /quick-start/:quickStartId/sites/:institutionId/screening/comments`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | quickStartAdmin | N/A|N/A
+quickStart | admin | quickStart|N/A
+quickStart | sponsor | quickStart|N/A
+quickStart | cro | quickStart|N/A
+
+## QuickSTARTSiteSendToScreening - <em>QuickSTART Site Send to CTO Screening</em>
+
+
+```shell
+curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/screening"  
   -H "Authorization: {{_JWT_TOKEN_}}"  
   -H "Content-Type: application/json"
 ```
@@ -3526,11 +3703,11 @@ curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:ins
 ```
 
 
-Sends a QuickSTART Site to Pre-Screen with CTO.  The site status must be 'pending'
+Sends a QuickSTART Site to CTO Screening.  The site status must be 'pending'
 
 ### HTTP Request
 
-`PUT /quick-start/:quickStartId/sites/:institutionId/pre-screen`
+`PUT /quick-start/:quickStartId/sites/:institutionId/screening`
 
 
 
@@ -3543,11 +3720,95 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
-quickStart | sponsor-contract | quickStart|N/A
-quickStart | sponsor-budget | quickStart|N/A
 quickStart | cro | quickStart|N/A
-quickStart | cro-contract | quickStart|N/A
-quickStart | cro-budget | quickStart|N/A
+
+## QuickSTARTSiteStartupChecklist - <em>QuickSTART Site Startup Checklist</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/startup-checklist"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/QuickStartSiteParams",
+    "type": "object",
+    "properties": {"quickStartId": {"type": "string"}, "institutionId": {"type": "string"}},
+    "required": ["quickStartId", "institutionId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/QuickStartSiteStartupChecklistResponse",
+  "type": "object",
+  "properties": {
+    "siteStartupChecklist": {
+      "id": "/QuickStartSiteStartupChecklist",
+      "properties": {
+        "version": {"type": "number"},
+        "createDt": {"type": "date"},
+        "updateDt": {"type": "date"},
+        "documents": {
+          "type": "array",
+          "items": {
+            "id": "/QuickStartStartupChecklistDocument",
+            "properties": {
+              "ordinal": {"type": "number"},
+              "label": {"type": "string"},
+              "description": {"type": "string"},
+              "code": {"type": "string"},
+              "footnote": {"type": "string"},
+              "type": {"type": "string", "enum": ["budget", "contract", "generic"]},
+              "isRequiredForREBSubmission": {"type": "boolean"},
+              "isSiteComplete": {"type": "boolean"},
+              "siteCompleteDt": {"type": "date"},
+              "siteCompleteUserId": {"type": "object"},
+              "isSponsorNA": {"type": "boolean"},
+              "sponsorNADt": {"type": "date"},
+              "sponsorNAUserId": {"type": "object"},
+              "isSponsorComplete": {"type": "boolean"},
+              "sponsorCompleteDt": {"type": "date"},
+              "sponsorCompleteUserId": {"type": "object"}
+            },
+            "required": ["ordinal", "label", "code", "type", "isRequiredForREBSubmission"]
+          }
+        }
+      },
+      "required": ["version", "createDt", "updateDt", "documents"]
+    }
+  }
+}
+```
+
+
+Gets the current startup checklist for the site.
+
+### HTTP Request
+
+`GET /quick-start/:quickStartId/sites/:institutionId/startup-checklist`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | quickStartAdmin | N/A|N/A
+quickStart | * | quickStart|N/A
+quickStartSite | * | quickStartSite|N/A
+institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTSiteUpdate - <em>QuickSTART Site Update</em>
 
@@ -3615,6 +3876,88 @@ quickStart | cro-budget | quickStart|N/A
 quickStartSite | rc | quickStartSite|The related quickstart must not be marked as a sponsor engagement.
 quickStartSite | budget | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
 quickStartSite | contract | quickStartSite|The related quickstart must not be marked as a sponsor engagement.                        The user must be assigned to the specific approval.
+
+## QuickSTARTSiteUpdateStartupChecklist - <em>QuickSTART Site Startup Checklist Update</em>
+
+
+```shell
+curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/startup-checklist"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/QuickStartSiteParams",
+    "type": "object",
+    "properties": {"quickStartId": {"type": "string"}, "institutionId": {"type": "string"}},
+    "required": ["quickStartId", "institutionId"]
+  },
+  "body": {
+    "id": "/QuickStartSiteStartupChecklistBody",
+    "type": "object",
+    "properties": {
+      "documents": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "code": {"type": "string"},
+            "isSiteComplete": {"type": "boolean"},
+            "isSponsorNA": {"type": "boolean"},
+            "isSponsorComplete": {"type": "boolean"}
+          },
+          "required": ["code", "isSiteComplete", "isSponsorNA", "isSponsorComplete"]
+        }
+      }
+    }
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Updates the current startup checklist for the site.
+
+### HTTP Request
+
+`PUT /quick-start/:quickStartId/sites/:institutionId/startup-checklist`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | quickStartAdmin | N/A|N/A
+quickStart | sponsor | quickStart|The user can only edit the sponsor portion of the startup checklist
+quickStart | sponsor-contract | quickStart|The user can only edit the sponsor portion of the startup checklist
+quickStart | sponsor-budget | quickStart|The user can only edit the sponsor portion of the startup checklist
+quickStart | cro | quickStart|The user can only edit the sponsor portion of the startup checklist
+quickStart | cro-contract | quickStart|The user can only edit the sponsor portion of the startup checklist
+quickStart | cro-budget | quickStart|The user can only edit the sponsor portion of the startup checklist
+quickStartSite | rc | quickStartSite|The user can only edit the sponsor portion of the startup checklist
+institution | quickStartSponsor | quickStart|The user can only edit the sponsor portion of the startup checklist                        The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTSiteUpdateTimers - <em>QuickSTART Site Update Timers</em>
 
@@ -3696,7 +4039,6 @@ Updates an existing QuickSTART Site Timers in the system. If the site is complet
 ------------|------------|-------------|----------------
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
-quickStart | admin | quickStart|N/A
 
 ## QuickSTARTSites - <em>QuickSTART Sites</em>
 
@@ -3780,7 +4122,16 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites"
           },
           "status": {
             "type": "string",
-            "enum": ["paused", "pending", "screen", "review", "active", "completed"]
+            "enum": [
+              "paused",
+              "pending",
+              "screen",
+              "review",
+              "startup",
+              "prep",
+              "active",
+              "completed"
+            ]
           },
           "activeDt": {"type": "date"},
           "timers": {
@@ -3789,6 +4140,10 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites"
             "properties": {
               "active": {"type": "number"},
               "daysToApprove": {"type": "number"},
+              "checklist": {"type": "number"},
+              "daysToChecklist": {"type": "number"},
+              "prep": {"type": "number"},
+              "daysToPrep": {"type": "number"},
               "contract": {
                 "type": "object",
                 "properties": {
@@ -3813,7 +4168,13 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites"
             "properties": {
               "timerStartDt": {"type": "date"},
               "timerCompleteDt": {"type": "date"},
-              "actualCompleteDt": {"type": "date"}
+              "actualCompleteDt": {"type": "date"},
+              "checklistStartDt": {"type": "date"},
+              "checklistCompleteDt": {"type": "date"},
+              "checklistActualCompleteDt": {"type": "date"},
+              "prepTimerStartDt": {"type": "date"},
+              "prepTimerCompleteDt": {"type": "date"},
+              "prepTimerActualCompleteDt": {"type": "date"}
             }
           },
           "createDt": {"type": "date"},
@@ -3901,13 +4262,14 @@ curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
           "required": ["userId"]
         }
       },
+      "isStartupChecklist": {"type": "boolean"},
       "isSingleSiteStudy": {"type": "boolean"},
       "isSiteEngagement": {"type": "boolean"},
       "isSponsorEngagement": {"type": "boolean"},
       "isStreamStudy": {"type": "boolean"},
       "quickStartIdentifier": {"type": ["string", "null"]},
       "projectIdNumber": {"type": ["number", "null"]},
-      "status": {"type": "string", "enum": ["pending", "screen", "active", "completed"]},
+      "status": {"type": "string", "enum": ["pending", "screen", "startup", "active", "completed"]},
       "shortTitle": {"type": "string"},
       "studyType": {"type": "string", "enum": ["phase1", "phase2", "phase3", "phase4", "other"]},
       "studyTypeOther": {"type": ["string", "null"]},

@@ -272,6 +272,15 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
             }
           }
         },
+        "startupChecklistDocumentTypes": {
+          "id": "QuickStartStartupChecklistDocumentTypeDictionary",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {"code": {"type": "string"}, "label": {"type": "string"}},
+              "required": ["code", "label"]
+            }
+          }
+        },
         "creationProgress": {
           "type": "array",
           "items": {
@@ -396,6 +405,7 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
       "required": [
         "status",
         "studyTypes",
+        "startupChecklistDocumentTypes",
         "creationProgress",
         "site",
         "contractStrategies",

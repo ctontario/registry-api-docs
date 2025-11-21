@@ -763,6 +763,7 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId/issues"
         "properties": {
           "id": {"type": "object"},
           "taskLogId": {"type": "object"},
+          "taskName": {"type": "string"},
           "rownum": {"type": "string"},
           "issueType": {"type": "string"},
           "messageId": {"type": ["string", "null"]},
@@ -771,15 +772,26 @@ curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/:taskLogId/issues"
           "rawData": {"type": ["object", "string"]},
           "data": {
             "properties": {
-              "id": {"type": "string"},
+              "dataId": {"type": "string"},
               "email": {"type": "string"},
               "firstName": {"type": "string"},
               "lastName": {"type": "string"},
               "institution": {"type": "string"}
             }
-          }
+          },
+          "createDt": {"type": "date"},
+          "updateDt": {"type": "date"}
         },
-        "required": ["id", "data", "taskLogId", "issueType", "isResolved"]
+        "required": [
+          "id",
+          "data",
+          "taskLogId",
+          "taskName",
+          "issueType",
+          "isResolved",
+          "createDt",
+          "updateDt"
+        ]
       }
     }
   },
@@ -859,6 +871,114 @@ name is passed in then all tasks from the previous run will be included
 ### HTTP Request
 
 `GET /admin/sync/taskLogs`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | * | N/A|N/A
+
+## TaskLogIssueList - <em>Task Logs Issues List</em>
+
+
+```shell
+curl "https://ctoregistry.com/api/v1/admin/sync/taskLogs/issues/list"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "query": {
+    "id": "/TaskLogIssuesListQuery",
+    "type": "object",
+    "properties": {
+      "offset": {"type": "integer", "minimum": 0, "default": 0},
+      "limit": {"type": "integer", "minimum": 0, "default": 20},
+      "sortby": {"type": "string"},
+      "order": {"type": "string"},
+      "search": {"type": "string"},
+      "status": {"type": "string"},
+      "csv": {"type": "boolean"},
+      "taskName": {"type": ["string", "array"]},
+      "messageType": {"type": "string", "description": "searches the message type"}
+    }
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/TaskLogIssuesResponse",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "id": "/ListMeta",
+      "properties": {
+        "count": {"type": "number"},
+        "limit": {"type": "number"},
+        "offset": {"type": "number"}
+      },
+      "required": ["count", "limit", "offset"]
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "id": "/TaskLogIssue",
+        "properties": {
+          "id": {"type": "object"},
+          "taskLogId": {"type": "object"},
+          "taskName": {"type": "string"},
+          "rownum": {"type": "string"},
+          "issueType": {"type": "string"},
+          "messageId": {"type": ["string", "null"]},
+          "issue": {"type": ["string"]},
+          "isResolved": {"type": "boolean"},
+          "rawData": {"type": ["object", "string"]},
+          "data": {
+            "properties": {
+              "dataId": {"type": "string"},
+              "email": {"type": "string"},
+              "firstName": {"type": "string"},
+              "lastName": {"type": "string"},
+              "institution": {"type": "string"}
+            }
+          },
+          "createDt": {"type": "date"},
+          "updateDt": {"type": "date"}
+        },
+        "required": [
+          "id",
+          "data",
+          "taskLogId",
+          "taskName",
+          "issueType",
+          "isResolved",
+          "createDt",
+          "updateDt"
+        ]
+      }
+    }
+  },
+  "required": ["meta", "data"]
+}
+```
+
+
+access the full paginated list of task log issues in the system
+
+
+### HTTP Request
+
+`GET /admin/sync/taskLogs/issues/list`
 
 
 

@@ -49,7 +49,6 @@ Error Code | HTTP Status Code | Error Type | Description
 <small>22110</small> | <small>400</small> | <small>COMMITTEE_USER_DUPLICATE</small> | <small>This user is already associated to the committee</small>
 <small>22111</small> | <small>400</small> | <small>COMMITTEE_MEMBER_NOT_FOUND</small> | <small>The requested committee member was not found.</small>
 <small>23104</small> | <small>400</small> | <small>STUDY_NOT_FOUND</small> | <small>Study not found</small>
-<small>23105</small> | <small>400</small> | <small>QUICKSTART_SITE_NOT_FOUND</small> | <small>QuickSTART site not found</small>
 <small>23106</small> | <small>400</small> | <small>QUICKSTART_SITE_NOT_READY</small> | <small>QuickSTART site not ready</small>
 <small>23107</small> | <small>400</small> | <small>QUICKSTART_CREATION_NOT_COMPLETE</small> | <small>QuickSTART creation data has not been completed.</small>
 <small>23108</small> | <small>400</small> | <small>QUICKSTART_SITE_DUPLICATE</small> | <small>QuickSTART site with institutionId already exists on the specified QuickSTART application</small>
