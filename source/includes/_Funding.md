@@ -413,6 +413,28 @@ curl "https://ctoregistry.com/api/v1/funding/fee-schedules"
                           },
                           "required": ["payment"]
                         }
+                      },
+                      "siteQuickStartPayment": {
+                        "type": "array",
+                        "items": {
+                          "properties": {
+                            "institutionId": {"type": "object"},
+                            "daysToPayout": {"type": "number"},
+                            "payment": {"type": "number"}
+                          },
+                          "required": ["payment"]
+                        }
+                      },
+                      "rebQuickStartPayment": {
+                        "type": "array",
+                        "items": {
+                          "properties": {
+                            "committeeId": {"type": "object"},
+                            "daysToPayout": {"type": "number"},
+                            "payment": {"type": "number"}
+                          },
+                          "required": ["payment"]
+                        }
                       }
                     },
                     "required": ["name", "label", "description", "sponsorFee", "rebPayment"]
@@ -1790,7 +1812,10 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
       },
       "paymentType": {
         "type": ["string", "array"],
-        "items": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+        "items": {
+          "type": "string",
+          "enum": ["reb", "sponsor", "institution", "rebQuickStart", "institutionQuickStart"]
+        },
         "description": "The payment type to filter by"
       }
     }
@@ -1821,10 +1846,16 @@ curl "https://ctoregistry.com/api/v1/funding/payments"
         "id": "/StudyFundingPaymentShortProfile",
         "properties": {
           "id": {"type": "object"},
-          "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+          "paymentType": {
+            "type": "string",
+            "enum": ["reb", "sponsor", "institution", "rebQuickStart", "institutionQuickStart"]
+          },
           "institutionId": {"type": "object"},
           "institutionName": {"type": "string"},
-          "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
+          "paymentReason": {
+            "type": "string",
+            "enum": ["legacy", "full", "hard", "manual", "invoice"]
+          },
           "paymentNumber": {"type": "string"},
           "paymentReference": {"type": "string"},
           "paymentSummaryId": {"type": "object"},
@@ -1978,7 +2009,10 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
       "type": "object",
       "properties": {
         "id": {"type": "object"},
-        "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+        "paymentType": {
+          "type": "string",
+          "enum": ["reb", "sponsor", "institution", "rebQuickStart", "institutionQuickStart"]
+        },
         "institutionId": {"type": "object"},
         "institutionName": {"type": "string"},
         "paymentNumber": {"type": "string"},
@@ -1991,7 +2025,10 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
         "isVoid": {"type": "boolean"},
         "isDeleteError": {"type": "boolean"},
         "totalPayment": {"type": "number"},
-        "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
+        "paymentReason": {
+          "type": "string",
+          "enum": ["legacy", "full", "hard", "manual", "invoice"]
+        },
         "createUserId": {"type": ["object", "null"]},
         "createDt": {"type": "date"},
         "updateDt": {"type": "date"},
@@ -2099,9 +2136,15 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
                   "payment_reb_create",
                   "payment_reb_update",
                   "payment_reb_delete",
+                  "payment_reb_quickstart_create",
+                  "payment_reb_quickstart_update",
+                  "payment_reb_quickstart_delete",
                   "payment_institution_create",
                   "payment_institution_update",
                   "payment_institution_delete",
+                  "payment_institution_quickstart_create",
+                  "payment_institution_quickstart_update",
+                  "payment_institution_quickstart_delete",
                   "payment_institution_delete_error",
                   "payment_sponsor_create",
                   "payment_sponsor_update",
@@ -3271,9 +3314,15 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
               "payment_reb_create",
               "payment_reb_update",
               "payment_reb_delete",
+              "payment_reb_quickstart_create",
+              "payment_reb_quickstart_update",
+              "payment_reb_quickstart_delete",
               "payment_institution_create",
               "payment_institution_update",
               "payment_institution_delete",
+              "payment_institution_quickstart_create",
+              "payment_institution_quickstart_update",
+              "payment_institution_quickstart_delete",
               "payment_institution_delete_error",
               "payment_sponsor_create",
               "payment_sponsor_update",
@@ -3294,7 +3343,10 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
         "type": "object",
         "properties": {
           "id": {"type": "object"},
-          "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+          "paymentType": {
+            "type": "string",
+            "enum": ["reb", "sponsor", "institution", "rebQuickStart", "institutionQuickStart"]
+          },
           "institutionId": {"type": "object"},
           "institutionName": {"type": "string"},
           "paymentNumber": {"type": "string"},
@@ -3307,7 +3359,10 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
           "isVoid": {"type": "boolean"},
           "isDeleteError": {"type": "boolean"},
           "totalPayment": {"type": "number"},
-          "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
+          "paymentReason": {
+            "type": "string",
+            "enum": ["legacy", "full", "hard", "manual", "invoice"]
+          },
           "createUserId": {"type": ["object", "null"]},
           "createDt": {"type": "date"},
           "updateDt": {"type": "date"},
@@ -3415,9 +3470,15 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
                     "payment_reb_create",
                     "payment_reb_update",
                     "payment_reb_delete",
+                    "payment_reb_quickstart_create",
+                    "payment_reb_quickstart_update",
+                    "payment_reb_quickstart_delete",
                     "payment_institution_create",
                     "payment_institution_update",
                     "payment_institution_delete",
+                    "payment_institution_quickstart_create",
+                    "payment_institution_quickstart_update",
+                    "payment_institution_quickstart_delete",
                     "payment_institution_delete_error",
                     "payment_sponsor_create",
                     "payment_sponsor_update",
@@ -3634,7 +3695,10 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
         "type": "object",
         "properties": {
           "id": {"type": "object"},
-          "paymentType": {"type": "string", "enum": ["reb", "sponsor", "institution"]},
+          "paymentType": {
+            "type": "string",
+            "enum": ["reb", "sponsor", "institution", "rebQuickStart", "institutionQuickStart"]
+          },
           "institutionId": {"type": "object"},
           "institutionName": {"type": "string"},
           "paymentNumber": {"type": "string"},
@@ -3647,7 +3711,10 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
           "isVoid": {"type": "boolean"},
           "isDeleteError": {"type": "boolean"},
           "totalPayment": {"type": "number"},
-          "paymentReason": {"type": "string", "enum": ["legacy", "full", "hard", "manual"]},
+          "paymentReason": {
+            "type": "string",
+            "enum": ["legacy", "full", "hard", "manual", "invoice"]
+          },
           "createUserId": {"type": ["object", "null"]},
           "createDt": {"type": "date"},
           "updateDt": {"type": "date"},
@@ -3755,9 +3822,15 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
                     "payment_reb_create",
                     "payment_reb_update",
                     "payment_reb_delete",
+                    "payment_reb_quickstart_create",
+                    "payment_reb_quickstart_update",
+                    "payment_reb_quickstart_delete",
                     "payment_institution_create",
                     "payment_institution_update",
                     "payment_institution_delete",
+                    "payment_institution_quickstart_create",
+                    "payment_institution_quickstart_update",
+                    "payment_institution_quickstart_delete",
                     "payment_institution_delete_error",
                     "payment_sponsor_create",
                     "payment_sponsor_update",
@@ -3925,9 +3998,15 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                   "payment_reb_create",
                   "payment_reb_update",
                   "payment_reb_delete",
+                  "payment_reb_quickstart_create",
+                  "payment_reb_quickstart_update",
+                  "payment_reb_quickstart_delete",
                   "payment_institution_create",
                   "payment_institution_update",
                   "payment_institution_delete",
+                  "payment_institution_quickstart_create",
+                  "payment_institution_quickstart_update",
+                  "payment_institution_quickstart_delete",
                   "payment_institution_delete_error",
                   "payment_sponsor_create",
                   "payment_sponsor_update",
@@ -4079,9 +4158,15 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId"
                             "payment_reb_create",
                             "payment_reb_update",
                             "payment_reb_delete",
+                            "payment_reb_quickstart_create",
+                            "payment_reb_quickstart_update",
+                            "payment_reb_quickstart_delete",
                             "payment_institution_create",
                             "payment_institution_update",
                             "payment_institution_delete",
+                            "payment_institution_quickstart_create",
+                            "payment_institution_quickstart_update",
+                            "payment_institution_quickstart_delete",
                             "payment_institution_delete_error",
                             "payment_sponsor_create",
                             "payment_sponsor_update",

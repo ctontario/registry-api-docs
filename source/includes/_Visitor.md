@@ -473,7 +473,7 @@ curl -X POST "https://ctoregistry.com/api/v1/visitor/"
       },
       "password": {"type": "string", "minLength": 7, "description": "The user's password"}
     },
-    "required": ["username", "firstName", "lastName", "title", "institution", "password"]
+    "required": ["username", "firstName", "lastName", "institution", "password"]
   }
 }
 ```

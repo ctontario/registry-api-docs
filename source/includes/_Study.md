@@ -267,6 +267,12 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
           "parentFormIdNumber": {"type": "number"},
           "formIdNumber": {"type": "number"},
           "initialSubmitDt": {"type": "date"},
+          "initialApprovalDt": {"type": "date"},
+          "initialReviewDt": {"type": "date"},
+          "initialReviewType": {
+            "type": "string",
+            "enum": ["Full Board Review", "Delegated Review", "Admin Review"]
+          },
           "hasFees": {"type": ["boolean", "null"]},
           "centre": {"type": ["string", "null"]},
           "centreStatus": {
@@ -291,9 +297,10 @@ curl "https://ctoregistry.com/api/v1/study/:studyId/forms"
                 "reviewReference": {"type": "string"},
                 "centre": {"type": ["string", "null"]},
                 "event": {"type": "string"},
+                "eventUnmapped": {"type": "string"},
                 "eventDt": {"type": "date"}
               },
-              "required": ["event", "eventDt"]
+              "required": ["event", "eventUnmapped", "eventDt"]
             }
           }
         },
@@ -364,7 +371,12 @@ curl "https://ctoregistry.com/api/v1/study/"
         "type": ["string", "array"],
         "description": "an array of sponsor institution IDs"
       },
-      "committeeIds": {"type": ["string", "array"], "description": "an array of committee IDs"}
+      "committeeIds": {"type": ["string", "array"], "description": "an array of committee IDs"},
+      "studyType": {
+        "type": ["string", "array"],
+        "description": "an array of types",
+        "items": {"enum": ["canReview", "quickStart"]}
+      }
     }
   }
 }
@@ -630,12 +642,11 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
               "other",
               "otherInformation",
               "dateOfBirthPartial",
-              "dateOfBirthPartial2",
               "dateOfDeathPartial",
               "initialsPartial",
-              "initialsPartial2",
               "specimenNumber",
               "race",
+              "sexGender",
               "sex",
               "sin",
               "phone",
@@ -647,13 +658,23 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
         "waiverOfConsent": {"type": "boolean"},
         "waiverOfConsentType": {
           "type": "string",
-          "enum": ["all", "some"],
+          "enum": ["all", "some", "someSDM"],
           "description": "Dictionary: Clinical Trial Waiver of Consent Types"
         },
         "waiverOfConsentDesc": {"type": ["string", "null"]},
         "informedConsent": {
           "type": "array",
-          "items": {"type": "string", "enum": ["thirdParty", "deferred", "waiver"]},
+          "items": {
+            "type": "string",
+            "enum": [
+              "thirdParty",
+              "deferred",
+              "waiver",
+              "waiverObs",
+              "previousObs",
+              "incapacitated"
+            ]
+          },
           "description": "Dictionary: Clinical Trial Informed Consent Types"
         },
         "withdrawData": {"type": "boolean"},
@@ -784,6 +805,128 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
         "dsmb": {"type": "boolean"},
         "ctaApproved": {"type": "boolean"},
         "ctaInvestigational": {"type": "boolean"},
+        "recruitmentMaterials": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "referral",
+              "referralObs",
+              "communityPartner",
+              "advertisements",
+              "recruitmentDatabase",
+              "thirdParty",
+              "website",
+              "socialMedia",
+              "video",
+              "surveyPanel",
+              "snowball",
+              "investigator",
+              "other"
+            ],
+            "description": "Dictionary: Clinical Trial Recruitment Materials"
+          }
+        },
+        "recruitmentMaterialsOther": {"type": ["string", "null"]},
+        "initialContact": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "telephone",
+              "email",
+              "inPerson",
+              "letter",
+              "participantContact",
+              "notReady",
+              "other"
+            ],
+            "description": "Dictionary: Clinical Trial Initial Contact Types"
+          }
+        },
+        "initialContactOther": {"type": ["string", "null"]},
+        "informedConsentDiscussion": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["inPerson", "remote", "noDiscussion", "noDiscussionObs"],
+            "description": "Dictionary: Clinical Trial Informed Consent Discussion Types"
+          }
+        },
+        "informedConsentDiscussionJustify": {"type": ["string", "null"]},
+        "informedConsentDocumentation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["written", "verbally", "implied", "other"],
+            "description": "Dictionary: Clinical Trial Informed Consent Documentation Types"
+          }
+        },
+        "informedConsentDocumentationJustify": {"type": ["string", "null"]},
+        "centralEConsentPlatform": {"type": "boolean"},
+        "medicalEmergencySDMInformedConsent": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["inPerson", "remote", "noDiscussion", "noDiscussionObs"],
+            "description": "Dictionary: Clinical Trial Informed Consent Discussion Types"
+          }
+        },
+        "medicalEmergencySDMInformedConsentJustify": {"type": ["string", "null"]},
+        "medicalEmergencyInformedConsentDocumentation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["written", "verbally", "implied", "other"],
+            "description": "Dictionary: Clinical Trial Informed Consent Documentation Types"
+          }
+        },
+        "medicalEmergencyInformedConsentDocumentationOther": {"type": ["string", "null"]},
+        "medicalEmergencyParticipantInformedConsent": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["inPerson", "remote", "noDiscussion", "noDiscussionObs"],
+            "description": "Dictionary: Clinical Trial Informed Consent Discussion Types"
+          }
+        },
+        "medicalEmergencyParticipantInformedConsentJustify": {"type": ["string", "null"]},
+        "medicalEmergencyParticipantInformedConsentDocumentation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["written", "verbally", "implied", "other"],
+            "description": "Dictionary: Clinical Trial Informed Consent Documentation Types"
+          }
+        },
+        "medicalEmergencyParticipantInformedConsentDocumentationOther": {
+          "type": ["string", "null"]
+        },
+        "participantsLoseCapacity": {"type": "boolean"},
+        "informedConsentAssentDebriefing": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["consentForms", "assentForms", "debriefingMaterials", "other"],
+            "description": "Dictionary: Clinical Trial Informed Consent Assent Debriefing Types"
+          }
+        },
+        "secondaryUseInformedConsent": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "thirdParty",
+              "deferred",
+              "waiver",
+              "waiverObs",
+              "previousObs",
+              "incapacitated"
+            ],
+            "description": "Dictionary: Clinical Trial Informed Consent Types"
+          }
+        },
+        "futureUseBroadConsent": {"type": "boolean"},
         "provincialApplication": {
           "type": "object",
           "properties": {
@@ -807,7 +950,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
                       "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
                     }
                   },
-                  "required": ["id", "firstName", "lastName", "title"]
+                  "required": ["id", "firstName", "lastName"]
                 }
               },
               "required": ["firstName", "lastName"]
@@ -832,7 +975,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
                       "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
                     }
                   },
-                  "required": ["id", "firstName", "lastName", "title"]
+                  "required": ["id", "firstName", "lastName"]
                 }
               },
               "required": ["firstName", "lastName"]
@@ -857,7 +1000,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
                       "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
                     }
                   },
-                  "required": ["id", "firstName", "lastName", "title"]
+                  "required": ["id", "firstName", "lastName"]
                 }
               },
               "required": ["firstName", "lastName"]
@@ -913,7 +1056,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
                         "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
                       }
                     },
-                    "required": ["id", "firstName", "lastName", "title"]
+                    "required": ["id", "firstName", "lastName"]
                   }
                 },
                 "required": ["firstName", "lastName"]
@@ -938,7 +1081,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
                         "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
                       }
                     },
-                    "required": ["id", "firstName", "lastName", "title"]
+                    "required": ["id", "firstName", "lastName"]
                   }
                 },
                 "required": ["firstName", "lastName"]
@@ -963,7 +1106,7 @@ curl "https://ctoregistry.com/api/v1/study/:studyId"
                         "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
                       }
                     },
-                    "required": ["id", "firstName", "lastName", "title"]
+                    "required": ["id", "firstName", "lastName"]
                   }
                 },
                 "required": ["firstName", "lastName"]

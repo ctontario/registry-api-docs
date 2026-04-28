@@ -270,7 +270,7 @@ curl -X POST "https://ctoregistry.com/api/v1/user/"
         "description": "Whether the user agreed to the confidentiality agreement"
       }
     },
-    "required": ["username", "firstName", "lastName", "title", "institution"]
+    "required": ["username", "firstName", "lastName", "institution"]
   }
 }
 ```
@@ -1283,7 +1283,7 @@ curl "https://ctoregistry.com/api/v1/user/"
             "properties": {
               "status": {"type": "string"},
               "title": {
-                "type": "string",
+                "type": ["string", "null"],
                 "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
               },
               "firstName": {"type": "string"},
@@ -1295,7 +1295,7 @@ curl "https://ctoregistry.com/api/v1/user/"
               },
               "isDraft": {"type": "boolean"}
             },
-            "required": ["status", "title", "firstName", "lastName", "privacy", "isDraft"]
+            "required": ["status", "firstName", "lastName", "privacy", "isDraft"]
           },
           "confidentiality": {
             "type": "array",
@@ -1704,7 +1704,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId"
           "properties": {
             "status": {"type": "string"},
             "title": {
-              "type": "string",
+              "type": ["string", "null"],
               "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
             },
             "firstName": {"type": "string"},
@@ -1713,7 +1713,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId"
             "privacy": {"type": "string", "enum": ["public", "private", "institution", "members"]},
             "isDraft": {"type": "boolean"}
           },
-          "required": ["status", "title", "firstName", "lastName", "privacy", "isDraft"]
+          "required": ["status", "firstName", "lastName", "privacy", "isDraft"]
         },
         "confidentiality": {
           "type": "array",
@@ -1861,7 +1861,7 @@ curl -X PUT "https://ctoregistry.com/api/v1/user/:userId/profile"
         "description": "Title"
       }
     },
-    "required": ["firstName", "lastName", "title"]
+    "required": ["firstName", "lastName"]
   },
   "params": {
     "id": "/UserParams",
@@ -2333,7 +2333,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId/short-profile"
               "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
             }
           },
-          "required": ["firstName", "lastName", "title"]
+          "required": ["firstName", "lastName"]
         },
         "institutionIds": {"type": "array", "items": {"type": "object"}}
       },
@@ -2403,7 +2403,7 @@ curl "https://ctoregistry.com/api/v1/user/:userId/study"
               "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
             }
           },
-          "required": ["firstName", "lastName", "title"]
+          "required": ["firstName", "lastName"]
         },
         "institutionIds": {"type": "array", "items": {"type": "object"}}
       },

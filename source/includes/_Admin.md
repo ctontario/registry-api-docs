@@ -130,7 +130,7 @@ curl "https://ctoregistry.com/api/v1/admin/moderation/user"
           },
           "nextAction": {"type": "string"}
         },
-        "required": ["id", "account", "username", "title", "firstName", "lastName", "nextAction"]
+        "required": ["id", "account", "username", "firstName", "lastName", "nextAction"]
       }
     }
   }

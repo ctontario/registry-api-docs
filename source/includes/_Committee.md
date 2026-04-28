@@ -472,7 +472,7 @@ curl "https://ctoregistry.com/api/v1/committee/user/:userId"
               "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
             }
           },
-          "required": ["firstName", "lastName", "title"]
+          "required": ["firstName", "lastName"]
         },
         "institutionIds": {"type": "array", "items": {"type": "object"}}
       },
@@ -746,7 +746,7 @@ curl "https://ctoregistry.com/api/v1/committee/:committeeId/members"
                     "enum": ["Dr.", "Prof.", "Miss", "Mrs.", "Ms.", "Mr.", "Mx"]
                   }
                 },
-                "required": ["firstName", "lastName", "title"]
+                "required": ["firstName", "lastName"]
               },
               "institutionIds": {"type": "array", "items": {"type": "object"}}
             },

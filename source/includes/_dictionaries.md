@@ -68,3 +68,60 @@ palliativeCare|People in palliative care
 longTermCare|People in long-term care
 minorities|Aboriginal people and/or ethno-cultural minorities
 other|Other
+            
+## Clinical Trial Recruitment Materials
+
+Code | CTO Stream Value
+-----|------------------
+referral|Referral from healthcare providers
+referralObs|Referral from health care providers
+communityPartner|Introduction from community partner
+advertisements|Advertisements
+recruitmentDatabase|Recruitment database
+thirdParty|Third-party organization or recruitment company
+website|Website
+socialMedia|Social Media
+video|Video
+surveyPanel|Survey panel
+snowball|Snowball sampling
+investigator|From the investigator or other study team member
+other|Other
+            
+## Clinical Trial Initial Contact Types
+
+Code | CTO Stream Value
+-----|------------------
+telephone|Telephone
+email|Email
+inPerson|In-person
+letter|Letter
+participantContact|Participants will contact the study team
+notReady|Materials not ready at this time
+other|Other
+            
+## Clinical Trial Informed Consent Discussion Types
+
+Code | CTO Stream Value
+-----|------------------
+inPerson|In person
+remote|Remote
+noDiscussion|No discussion proposed
+noDiscussionObs|No discusison proposed
+            
+## Clinical Trial Informed Consent Documentation Types
+
+Code | CTO Stream Value
+-----|------------------
+written|Written
+verbally|Verbally
+impliedConsent|Implied Consent
+other|Other
+            
+## Clinical Trial Informed Consent Assent Debriefing Types
+
+Code | CTO Stream Value
+-----|------------------
+consentForms|Consent form
+assentForms|Assent form
+debriefingMaterials|Debriefing material
+other|Other consent/assent material

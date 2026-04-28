@@ -157,6 +157,71 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
               "required": ["code", "label"]
             }
           }
+        },
+        "recruitmentMaterials": {
+          "id": "StudyRecruitmentMaterialDictionary",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
+        },
+        "initialContacts": {
+          "id": "StudyInitialContact",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
+        },
+        "informedConsentDiscussions": {
+          "id": "StudyInformedConsentDiscussion",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
+        },
+        "informedConsentDocumentations": {
+          "id": "StudyInformedConsentDocumentation",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
+        },
+        "informedConsentAssentDebriefings": {
+          "id": "StudyInformedConsentAssentDebriefing",
+          "patternProperties": {
+            "^[a-zA-Z_$][\\w$]*$": {
+              "properties": {
+                "code": {"type": "string"},
+                "label": {"type": "string"},
+                "question": {"type": "string"}
+              },
+              "required": ["code", "label", "question"]
+            }
+          }
         }
       },
       "required": [
