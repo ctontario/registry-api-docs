@@ -528,12 +528,20 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                 "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
                               }
                             },
+                            "sponsorInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
+                            },
                             "croRoles": {
                               "type": "array",
                               "items": {
                                 "type": "string",
                                 "enum": ["cro", "cro-contract", "cro-budget"]
                               }
+                            },
+                            "croInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
                             },
                             "siteRoles": {
                               "type": "array",
@@ -548,6 +556,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                   "readonly"
                                 ]
                               }
+                            },
+                            "siteInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartAdmin"]}
                             }
                           },
                           "required": []
@@ -564,12 +576,20 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                 "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
                               }
                             },
+                            "sponsorInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
+                            },
                             "croRoles": {
                               "type": "array",
                               "items": {
                                 "type": "string",
                                 "enum": ["cro", "cro-contract", "cro-budget"]
                               }
+                            },
+                            "croInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
                             },
                             "siteRoles": {
                               "type": "array",
@@ -584,6 +604,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                   "readonly"
                                 ]
                               }
+                            },
+                            "siteInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartAdmin"]}
                             }
                           },
                           "required": []
@@ -604,12 +628,20 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                 "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
                               }
                             },
+                            "sponsorInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
+                            },
                             "croRoles": {
                               "type": "array",
                               "items": {
                                 "type": "string",
                                 "enum": ["cro", "cro-contract", "cro-budget"]
                               }
+                            },
+                            "croInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
                             },
                             "siteRoles": {
                               "type": "array",
@@ -624,6 +656,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                   "readonly"
                                 ]
                               }
+                            },
+                            "siteInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartAdmin"]}
                             }
                           },
                           "required": []
@@ -640,12 +676,20 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                 "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
                               }
                             },
+                            "sponsorInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
+                            },
                             "croRoles": {
                               "type": "array",
                               "items": {
                                 "type": "string",
                                 "enum": ["cro", "cro-contract", "cro-budget"]
                               }
+                            },
+                            "croInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
                             },
                             "siteRoles": {
                               "type": "array",
@@ -660,6 +704,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                   "readonly"
                                 ]
                               }
+                            },
+                            "siteInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartAdmin"]}
                             }
                           },
                           "required": []
@@ -680,12 +728,20 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                 "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
                               }
                             },
+                            "sponsorInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
+                            },
                             "croRoles": {
                               "type": "array",
                               "items": {
                                 "type": "string",
                                 "enum": ["cro", "cro-contract", "cro-budget"]
                               }
+                            },
+                            "croInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
                             },
                             "siteRoles": {
                               "type": "array",
@@ -700,6 +756,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                   "readonly"
                                 ]
                               }
+                            },
+                            "siteInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartAdmin"]}
                             }
                           },
                           "required": []
@@ -716,12 +776,20 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                 "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
                               }
                             },
+                            "sponsorInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
+                            },
                             "croRoles": {
                               "type": "array",
                               "items": {
                                 "type": "string",
                                 "enum": ["cro", "cro-contract", "cro-budget"]
                               }
+                            },
+                            "croInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
                             },
                             "siteRoles": {
                               "type": "array",
@@ -736,6 +804,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                   "readonly"
                                 ]
                               }
+                            },
+                            "siteInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartAdmin"]}
                             }
                           },
                           "required": []
@@ -756,12 +828,20 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                 "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
                               }
                             },
+                            "sponsorInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
+                            },
                             "croRoles": {
                               "type": "array",
                               "items": {
                                 "type": "string",
                                 "enum": ["cro", "cro-contract", "cro-budget"]
                               }
+                            },
+                            "croInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
                             },
                             "siteRoles": {
                               "type": "array",
@@ -776,6 +856,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                   "readonly"
                                 ]
                               }
+                            },
+                            "siteInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartAdmin"]}
                             }
                           },
                           "required": []
@@ -792,12 +876,20 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                 "enum": ["sponsor", "sponsor-contract", "sponsor-budget"]
                               }
                             },
+                            "sponsorInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
+                            },
                             "croRoles": {
                               "type": "array",
                               "items": {
                                 "type": "string",
                                 "enum": ["cro", "cro-contract", "cro-budget"]
                               }
+                            },
+                            "croInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartSponsor"]}
                             },
                             "siteRoles": {
                               "type": "array",
@@ -812,6 +904,10 @@ curl "https://ctoregistry.com/api/v1/dictionary/system"
                                   "readonly"
                                 ]
                               }
+                            },
+                            "siteInstitutionRoles": {
+                              "type": "array",
+                              "items": {"type": "string", "enum": ["quickStartAdmin"]}
                             }
                           },
                           "required": []

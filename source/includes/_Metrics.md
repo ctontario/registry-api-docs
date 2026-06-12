@@ -1070,6 +1070,8 @@ gets the Excel report for one QuickSTART site
     
  Scope      | Role       | Auth Source | Restrictions
 ------------|------------|-------------|----------------
-system | admin | N/A|N/A
-system | support | N/A|N/A
-system | quickStartAdmin | N/A|N/A
+system | * | N/A|N/A
+quickStart | * | quickStart|N/A
+quickStartSite | * | quickStartSite|N/A
+institution | quickStartAdmin | institution|N/A
+institution | quickStartSponsor | quickStart|N/A

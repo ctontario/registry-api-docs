@@ -417,6 +417,7 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStartSite|N/A
+institution | quickStartAdmin | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that match the target institution.
 institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTCreation - <em>QuickSTART Creation</em>
@@ -452,6 +453,7 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/"
       "isSponsorEngagement": {"type": "boolean"},
       "isSiteEngagement": {"type": "boolean"},
       "isStreamStudy": {"type": "boolean"},
+      "enableDocuments": {"type": "boolean"},
       "shortTitle": {"type": "string"},
       "quickStartIdentifier": {"type": ["string", "null"]},
       "projectIdNumber": {"type": ["number", "null"]},
@@ -604,7 +606,8 @@ Downloads one document from the specified QuickSTART application.
 ------------|------------|-------------|----------------
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStart|N/A
-institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
+institution | quickStartAdmin | quickStart|N/A
+institution | quickStartSponsor | quickStart|N/A
 
 ## QuickSTARTDocumentUpload - <em>Upload QuickSTART Document</em>
 
@@ -1076,12 +1079,16 @@ curl "https://ctoregistry.com/api/v1/quick-start/"
             ]
           },
           "shortTitle": {"type": "string"},
+          "leadSiteInstitutionId": {"type": "object"},
           "sponsorInstitutionId": {"type": "object"},
           "isSponsorManaged": {"type": "boolean"},
           "isSingleSiteStudy": {"type": "boolean"},
           "isStreamStudy": {"type": "boolean"},
           "isSiteEngagement": {"type": "boolean"},
           "isSponsorEngagement": {"type": "boolean"},
+          "enableDocuments": {"type": "boolean"},
+          "canCreateSites": {"type": "boolean"},
+          "isCreationDone": {"type": "boolean"},
           "projectIdNumber": {"type": "number"},
           "creationProgress": {
             "type": "array",
@@ -1107,6 +1114,9 @@ curl "https://ctoregistry.com/api/v1/quick-start/"
           "isStreamStudy",
           "isSiteEngagement",
           "isSponsorEngagement",
+          "enableDocuments",
+          "canCreateSites",
+          "isCreationDone",
           "creationProgress",
           "createDt",
           "updateDt"
@@ -1134,6 +1144,7 @@ Gets the list of all QuickSTART study applications that the user can access.
 system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 institution | quickStartSponsor | N/A|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
+institution | quickStartAdmin | N/A|The data is filtered to only include QuickSTART and QuickSTART sites that match the target institution.
 quickStart | * | N/A|The data is filtered to only include QuickSTART and QuickSTART site applications that the user is participating on.
 quickStartSite | * | N/A|The data is filtered to only include QuickSTART and QuickSTART site applications that the user is participating on.
 institution | member | N/A|The data is filtered to only include QuickSTART and QuickSTART site applications that the user is participating on.
@@ -1180,6 +1191,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
         "therapeuticArea": {"type": "string"},
         "projectIdNumber": {"type": "number"},
         "studyId": {"type": "object"},
+        "leadSiteInstitutionId": {"type": "object"},
         "sponsorInstitutionId": {"type": "object"},
         "croInstitutionId": {"type": "object"},
         "isPreScreenRequired": {"type": "boolean"},
@@ -1189,6 +1201,8 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
         "isStreamStudy": {"type": "boolean"},
         "isSiteEngagement": {"type": "boolean"},
         "isSponsorEngagement": {"type": "boolean"},
+        "enableDocuments": {"type": "boolean"},
+        "canCreateSites": {"type": "boolean"},
         "status": {
           "type": "string",
           "enum": [
@@ -1213,7 +1227,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
             "versionDt": {"type": ["date", "null"]},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation"]
+          "required": []
         },
         "budget": {
           "id": "/QuickStartBudget",
@@ -1225,7 +1239,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
             "versionDt": {"type": "date"},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation"]
+          "required": []
         },
         "contract": {
           "id": "/QuickStartContract",
@@ -1239,7 +1253,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
             "strategyOther": {"type": "string"},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation", "strategy"]
+          "required": []
         },
         "documents": {
           "type": "array",
@@ -1269,6 +1283,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
             ]
           }
         },
+        "isCreationDone": {"type": "boolean"},
         "creationProgress": {
           "type": "array",
           "items": {
@@ -1289,6 +1304,9 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
         "isStreamStudy",
         "isSiteEngagement",
         "isSponsorEngagement",
+        "enableDocuments",
+        "canCreateSites",
+        "isCreationDone",
         "status",
         "creationProgress",
         "createDt",
@@ -1444,6 +1462,7 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStart|N/A
+institution | quickStartAdmin | N/A|The data is filtered to only include QuickSTART and QuickSTART sites that match the target institution.
 institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTRebEventDelete - <em>QuickSTART Site Delete REB Event</em>
@@ -1943,7 +1962,8 @@ curl -X POST "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites"
         "type": ["string", "null"],
         "description": "required if site engagement is true for quickStart"
       },
-      "principalInvestigatorId": {"type": ["string", "null"]}
+      "principalInvestigatorId": {"type": ["string", "null"]},
+      "isLeadSite": {"type": "boolean"}
     },
     "required": ["institutionId"]
   }
@@ -2106,6 +2126,7 @@ Downloads one document from the specified QuickSTART application.
 ------------|------------|-------------|----------------
 quickStart | * | quickStart|N/A
 institution | quickStartSponsor | quickStart|N/A
+institution | quickStartAdmin | quickStart|N/A
 quickStartSite | * | quickStartSite|N/A
 
 ## QuickSTARTSiteDocumentUpload - <em>Upload QuickSTART Document</em>
@@ -2664,7 +2685,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
             "versionDt": {"type": ["date", "null"]},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation"]
+          "required": []
         },
         "budget": {
           "id": "/QuickStartBudget",
@@ -2676,7 +2697,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
             "versionDt": {"type": "date"},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation"]
+          "required": []
         },
         "contract": {
           "id": "/QuickStartContract",
@@ -2690,7 +2711,7 @@ curl "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutio
             "strategyOther": {"type": "string"},
             "notes": {"type": "string"}
           },
-          "required": ["documentLocation", "strategy"]
+          "required": []
         },
         "documents": {
           "type": "array",
@@ -2958,7 +2979,8 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStartSite|N/A
-institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
+institution | quickStartAdmin | institution|N/A
+institution | quickStartSponsor | quickStart|N/A
 
 ## QuickSTARTSiteRecordSentDt - <em>QuickSTART Site Record Document Sent Date</em>
 
@@ -3661,6 +3683,7 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
+institution | quickStartSponsor | quickStart|N/A
 quickStart | cro | quickStart|N/A
 
 ## QuickSTARTSiteSendToScreening - <em>QuickSTART Site Send to CTO Screening</em>
@@ -3721,6 +3744,62 @@ system | quickStartAdmin | N/A|N/A
 quickStart | admin | quickStart|N/A
 quickStart | sponsor | quickStart|N/A
 quickStart | cro | quickStart|N/A
+
+## QuickSTARTSiteSetAsLead - <em>QuickSTART Site Set as Lead</em>
+
+
+```shell
+curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId/sites/:institutionId/set-lead"  
+  -H "Authorization: {{_JWT_TOKEN_}}"  
+  -H "Content-Type: application/json"
+```
+
+> Request Schema
+
+```json
+{
+  "params": {
+    "id": "/QuickStartSiteParams",
+    "type": "object",
+    "properties": {"quickStartId": {"type": "string"}, "institutionId": {"type": "string"}},
+    "required": ["quickStartId", "institutionId"]
+  }
+}
+```
+
+
+> Response Schema
+
+```json
+{
+  "id": "/ActionResponse",
+  "type": "object",
+  "properties": {
+    "status": {"type": "string"},
+    "action": {"type": "string"},
+    "id": {"type": ["object", "null"]},
+    "result": {"type": ["object", "array", "string"]}
+  },
+  "required": ["status", "action", "id"]
+}
+```
+
+
+Updates the QuickSTART application indicating the specified site as the lead site
+
+### HTTP Request
+
+`PUT /quick-start/:quickStartId/sites/:institutionId/set-lead`
+
+
+
+### Authorization
+ 
+    
+ Scope      | Role       | Auth Source | Restrictions
+------------|------------|-------------|----------------
+system | admin | N/A|N/A
+system | quickStartAdmin | N/A|N/A
 
 ## QuickSTARTSiteStartupChecklist - <em>QuickSTART Site Startup Checklist</em>
 
@@ -3808,6 +3887,7 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 quickStartSite | * | quickStartSite|N/A
+institution | quickStartAdmin | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that match the target institution.
 institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
 
 ## QuickSTARTSiteUpdate - <em>QuickSTART Site Update</em>
@@ -4215,6 +4295,7 @@ system | admin | N/A|N/A
 system | quickStartAdmin | N/A|N/A
 quickStart | * | quickStart|N/A
 institution | quickStartSponsor | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that the target institution is listed as the sponsor and the sponsor is engaging in the QuickSTART process.
+institution | quickStartAdmin | quickStart|The data is filtered to only include QuickSTART and QuickSTART sites that match the target institution.
 quickStartSite | * | quickStart|The data is filtered to only include QuickSTART and QuickSTART site applications that the user is participating on.
 
 ## QuickSTARTUpdate - <em>QuickSTART Update</em>
@@ -4266,6 +4347,8 @@ curl -X PUT "https://ctoregistry.com/api/v1/quick-start/:quickStartId"
       "isSingleSiteStudy": {"type": "boolean"},
       "isSiteEngagement": {"type": "boolean"},
       "isSponsorEngagement": {"type": "boolean"},
+      "enableExtraDocuments": {"type": "boolean"},
+      "enableDocuments": {"type": "boolean"},
       "isStreamStudy": {"type": "boolean"},
       "quickStartIdentifier": {"type": ["string", "null"]},
       "projectIdNumber": {"type": ["number", "null"]},

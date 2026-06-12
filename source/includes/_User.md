@@ -1970,12 +1970,16 @@ curl "https://ctoregistry.com/api/v1/user/:userId/quick-start"
             ]
           },
           "shortTitle": {"type": "string"},
+          "leadSiteInstitutionId": {"type": "object"},
           "sponsorInstitutionId": {"type": "object"},
           "isSponsorManaged": {"type": "boolean"},
           "isSingleSiteStudy": {"type": "boolean"},
           "isStreamStudy": {"type": "boolean"},
           "isSiteEngagement": {"type": "boolean"},
           "isSponsorEngagement": {"type": "boolean"},
+          "enableDocuments": {"type": "boolean"},
+          "canCreateSites": {"type": "boolean"},
+          "isCreationDone": {"type": "boolean"},
           "projectIdNumber": {"type": "number"},
           "creationProgress": {
             "type": "array",
@@ -2001,6 +2005,9 @@ curl "https://ctoregistry.com/api/v1/user/:userId/quick-start"
           "isStreamStudy",
           "isSiteEngagement",
           "isSponsorEngagement",
+          "enableDocuments",
+          "canCreateSites",
+          "isCreationDone",
           "creationProgress",
           "createDt",
           "updateDt"
@@ -2220,6 +2227,7 @@ Gets all the saved searches for a user account
 self | N/A | N/A|N/A
 system | admin | N/A|N/A
 system | support | N/A|N/A
+system | quickStartAdmin | N/A|N/A
 institution | admin | user|N/A
 
 ## UserSearch - <em>Search Users</em>

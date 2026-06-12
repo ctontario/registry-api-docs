@@ -2155,7 +2155,7 @@ curl "https://ctoregistry.com/api/v1/funding/payments/:paymentId"
               "reason": {"type": "string"},
               "userId": {"type": "object"}
             },
-            "required": ["id", "actionDt", "action", "reason"]
+            "required": ["id", "actionDt", "action"]
           }
         }
       },
@@ -3489,7 +3489,7 @@ curl "https://ctoregistry.com/api/v1/funding/payment-summary/:paymentSummaryId"
                 "reason": {"type": "string"},
                 "userId": {"type": "object"}
               },
-              "required": ["id", "actionDt", "action", "reason"]
+              "required": ["id", "actionDt", "action"]
             }
           }
         },
@@ -3841,7 +3841,7 @@ curl "https://ctoregistry.com/api/v1/funding/:studyFundingId/payments"
                 "reason": {"type": "string"},
                 "userId": {"type": "object"}
               },
-              "required": ["id", "actionDt", "action", "reason"]
+              "required": ["id", "actionDt", "action"]
             }
           }
         },
